@@ -88,7 +88,7 @@ export default function HubScreen() {
 
         {/* Active deals */}
         <View style={styles.section}>
-          <SectionLabel sub="3 running this month" viewAll onViewAll={() => goToAdd()}>
+          <SectionLabel sub="3 running this month">
             Active deals
           </SectionLabel>
           <View style={{ gap: 12 }}>
