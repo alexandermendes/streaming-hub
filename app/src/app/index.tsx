@@ -11,7 +11,7 @@ import {
   ScreenHeader,
   SectionLabel,
 } from "@/components/streamers";
-import { activeDeals, offers, platformById, platforms, type PlatformId } from "@/data/streamers";
+import { activeDeals, lastMonthTotal, offers, platformById, platforms, type PlatformId } from "@/data/streamers";
 import { colors, radius, serif, wa } from "@/theme";
 
 const FILTERS = ["All", "Free trial", "Under £5", "Annual saver", "Bundles"];
@@ -32,6 +32,15 @@ export default function HubScreen() {
       setExpiryModalVisible(true);
     }
   }, []);
+
+  // ── Spending summary ──────────────────────────────────────────────────────
+  const totalMonthly = parseFloat(
+    activeDeals.reduce((sum, d) => sum + d.priceNum, 0).toFixed(2)
+  );
+  const diff = parseFloat((totalMonthly - lastMonthTotal).toFixed(2));
+  const diffUp = diff >= 0;
+  const diffLabel = `£${Math.abs(diff) % 1 === 0 ? Math.abs(diff).toFixed(0) : Math.abs(diff).toFixed(2)}`;
+  // ─────────────────────────────────────────────────────────────────────────
 
   const goToAdd = (platform?: PlatformId) =>
     router.push(platform ? { pathname: "/add", params: { platform } } : "/add");
@@ -75,30 +84,15 @@ export default function HubScreen() {
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
       >
-        <ScreenHeader title="Dan's Streamers" />
-
-        {/* Active platforms rail */}
-        <View style={styles.section}>
-          <SectionLabel>Your active platforms</SectionLabel>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.rail}
-          >
-            {platforms.map((p) => (
-              <PlatformTile key={p.id} p={p} onPress={() => goToAdd(p.id)} />
-            ))}
-            <AddPlatformTile onPress={() => goToAdd()} />
-          </ScrollView>
-        </View>
+        <ScreenHeader title="Your Subscriptions" />
 
         {/* Active deals */}
         <View style={styles.section}>
-          <SectionLabel sub="3 running this month" viewAll onViewAll={() => goToAdd()}>
+          <SectionLabel sub="3 running this month">
             Active deals
           </SectionLabel>
           <View style={{ gap: 12 }}>
-            {activeDeals.map((d) => {
+            {[...activeDeals].sort((a, b) => a.endsInDays - b.endsInDays).map((d) => {
               const p = platformById(d.platform);
               const urgent = d.endsInDays <= 7;
               return (
@@ -142,25 +136,19 @@ export default function HubScreen() {
           </View>
         </View>
 
-        {/* Editor's tip */}
-        <Pressable
-          onPress={() => goToAdd("appletv")}
-          style={({ pressed }) => [styles.tipCard, pressed && styles.pressed]}
-        >
-          <View style={styles.tipHead}>
-            <View style={styles.tipBadge}>
-              <Text style={styles.tipBadgeText}>Editor's tip</Text>
-            </View>
-            <Text style={styles.tipDate}>12 May</Text>
+        {/* Spending summary */}
+        <View style={styles.summaryCard}>
+          <SectionLabel>Your total monthly spend</SectionLabel>
+          <View style={styles.summaryBody}>
+            <Text style={styles.summaryAmount}>
+              £{totalMonthly.toFixed(2)}
+              <Text style={styles.summaryAmountSuffix}>/month</Text>
+            </Text>
+            <Text style={[styles.summaryDiff, { color: diffUp ? colors.urgent : colors.brand }]}>
+              {diffUp ? "↑" : "↓"}  {diffUp ? "Up" : "Down"} {diffLabel} from last month
+            </Text>
           </View>
-          <Text style={styles.tipTitle}>Slow Horses, Season 4</Text>
-          <Text style={styles.tipBody}>
-            You cancelled Apple TV+ last month — 3 shows on your watchlist drop this week.
-          </Text>
-          <View style={styles.tipButton}>
-            <Text style={styles.tipButtonText}>Resubscribe · £8.99</Text>
-          </View>
-        </Pressable>
+        </View>
 
         {/* Deals & special offers */}
         <View style={[styles.section, { marginTop: 32 }]}>
@@ -255,6 +243,57 @@ const styles = StyleSheet.create({
   rail: { gap: 16, paddingVertical: 4, paddingRight: 8 },
   pressed: { opacity: 0.6 },
 
+  summaryCard: {
+    backgroundColor: colors.card,
+    borderRadius: radius["3xl"],
+    borderWidth: 1,
+    borderColor: wa(0.05),
+    marginBottom: 32,
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    paddingBottom: 20,
+  },
+  summaryRule: {
+    height: 1,
+    backgroundColor: wa(0.08),
+    marginVertical: 14,
+  },
+  summaryTitleRow: {
+    alignItems: "center",
+  },
+  summaryTitle: {
+    color: wa(0.55),
+    fontSize: 12,
+    fontWeight: "600",
+    letterSpacing: 1.2,
+    textTransform: "uppercase",
+  },
+  summaryBody: {
+    gap: 4,
+  },
+  summarySpendLabel: {
+    color: wa(0.45),
+    fontSize: 12,
+    fontWeight: "500",
+    marginBottom: 2,
+  },
+  summaryAmount: {
+    color: colors.white,
+    fontSize: 38,
+    fontWeight: "700",
+    lineHeight: 44,
+  },
+  summaryAmountSuffix: {
+    color: wa(0.35),
+    fontSize: 14,
+    fontWeight: "400",
+  },
+  summaryDiff: {
+    fontSize: 13,
+    fontWeight: "500",
+    marginTop: 4,
+  },
+
   dealCard: {
     backgroundColor: colors.card,
     padding: 16,
@@ -268,7 +307,7 @@ const styles = StyleSheet.create({
   dealPrice: { color: colors.brand, fontSize: 16, fontWeight: "700" },
   dealPriceUnit: { color: colors.white, fontSize: 9, opacity: 0.5 },
   track: {
-    height: 4,
+    height: 8,
     width: "100%",
     backgroundColor: wa(0.05),
     borderRadius: radius.full,

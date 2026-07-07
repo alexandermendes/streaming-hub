@@ -5,7 +5,7 @@ import type { ReactNode } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import type { Platform } from "@/data/streamers";
-import { colors, radius, wa } from "@/theme";
+import { colors, radius, serif, wa } from "@/theme";
 
 /* ─────────── Poster (gradient fallback + TMDB image + scrim) ─────────── */
 const POSTER_SCRIM = ["transparent", "rgba(0,0,0,0.7)"] as const;
@@ -129,10 +129,8 @@ export function RtTopBar() {
   return (
     <View style={styles.topBar}>
       <View style={{ width: 36 }} />
-      <Text style={styles.wordmark}>RADIO TIMES</Text>
-      <View style={styles.avatar}>
-        <Text style={styles.avatarText}>DH</Text>
-      </View>
+      <Text style={styles.wordmark}>RadioTimes</Text>
+      <Ionicons name="person-circle-outline" size={36} color={wa(0.7)} />
     </View>
   );
 }
@@ -226,7 +224,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 24,
   },
-  wordmark: { color: colors.white, fontSize: 15, fontWeight: "800", letterSpacing: 2 },
+  wordmark: { color: colors.white, fontFamily: serif.bold, fontSize: 26, letterSpacing: 0 },
   avatar: {
     width: 36,
     height: 36,
