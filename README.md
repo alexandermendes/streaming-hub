@@ -3,6 +3,8 @@
 A concept app for managing every streaming subscription you juggle — deals,
 expiries, and a Radio Times watchlist sorted by what's actually streaming where.
 
+**Live web app:** https://alexandermendes.github.io/streaming-hub/
+
 The repo holds two projects:
 
 | Project       | Path         | Stack                                            |
@@ -41,6 +43,20 @@ This starts Expo. From there:
 - or scan the QR code with **Expo Go** on your phone
 
 To build and run natively instead: `npm run ios` or `npm run android`.
+
+## Deployment
+
+The web build is published to GitHub Pages at
+**https://alexandermendes.github.io/streaming-hub/**.
+
+Every push to `main` triggers
+[`.github/workflows/deploy-pages.yml`](.github/workflows/deploy-pages.yml),
+which runs a static Expo web export (`npm run export:web` in `/app`) and
+deploys the resulting `dist/` to Pages. Since the site is served from the
+`/streaming-hub` subpath, `app/app.json` sets `experiments.baseUrl` to match.
+
+To produce the static build locally: `cd app && npm run export:web` (output in
+`app/dist`).
 
 ## Prototype (`/prototype`)
 
