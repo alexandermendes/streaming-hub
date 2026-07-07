@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { PlatformLogo } from "@/components/streamers";
@@ -25,8 +25,11 @@ const formatDate = (d: Date) => `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${
 const sameDay = (a: Date, b: Date) =>
   a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
 
+const defaultStartDate = new Date();
+const defaultEndDate = new Date(defaultStartDate);
+defaultEndDate.setDate(defaultEndDate.getDate() + 7);
+
 export default function AddSubscriptionScreen() {
-  const router = useRouter();
   const { platform } = useLocalSearchParams<{ platform?: string }>();
   const [selectedId, setSelectedId] = useState<PlatformId>(
     isPlatformId(platform) ? platform : "paramount",
@@ -38,12 +41,20 @@ export default function AddSubscriptionScreen() {
     if (isPlatformId(platform)) setSelectedId(platform);
   }, [platform]);
   const [open, setOpen] = useState(false);
-  const [startDate, setStartDate] = useState(new Date(2024, 4, 12));
-  const [endDate, setEndDate] = useState(new Date(2024, 7, 12));
+  const [startDate, setStartDate] = useState(defaultStartDate);
+  const [endDate, setEndDate] = useState(defaultEndDate);
   const [dealType, setDealType] = useState<DealType>("trial");
   const [leadDays, setLeadDays] = useState<LeadDays>(5);
   const [notify, setNotify] = useState(true);
   const [picker, setPicker] = useState<ActivePicker>(null);
+  const [monthlyCost, setMonthlyCost] = useState("6.99");
+  const [afterTrialCost, setAfterTrialCost] = useState("6.99");
+  const [promoCost, setPromoCost] = useState("2.99");
+  const [afterPromoCost, setAfterPromoCost] = useState("6.99");
+
+  useEffect(() => {
+    if (dealType === "full") setPicker(null);
+  }, [dealType]);
 
   const selected = platformById(selectedId);
 
@@ -107,25 +118,6 @@ export default function AddSubscriptionScreen() {
             )}
           </View>
 
-          {/* Dates */}
-          <View style={styles.dateRow}>
-            <DateField
-              label="Start date"
-              value={startDate}
-              active={picker === "start"}
-              onPress={() => setPicker((v) => (v === "start" ? null : "start"))}
-            />
-            <DateField
-              label="Ends"
-              value={endDate}
-              active={picker === "end"}
-              onPress={() => setPicker((v) => (v === "end" ? null : "end"))}
-            />
-          </View>
-          {picker && (
-            <MonthCalendar value={picker === "start" ? startDate : endDate} onSelect={pickDate} />
-          )}
-
           {/* Deal type */}
           <View>
             <Text style={styles.fieldLabel}>Deal type</Text>
@@ -142,14 +134,50 @@ export default function AddSubscriptionScreen() {
             </Segmented>
           </View>
 
-          {/* Monthly cost */}
-          <View>
-            <Text style={styles.fieldLabel}>Monthly cost</Text>
-            <View style={styles.costField}>
-              <Text style={styles.costValue}>£0.00</Text>
-              <Text style={styles.costHint}>after trial £6.99</Text>
-            </View>
-          </View>
+          {/* Dates */}
+          {dealType !== "full" && (
+            <>
+              <View style={styles.dateRow}>
+                <DateField
+                  label="Start date"
+                  value={startDate}
+                  active={picker === "start"}
+                  onPress={() => setPicker((v) => (v === "start" ? null : "start"))}
+                />
+                <DateField
+                  label="Ends"
+                  value={endDate}
+                  active={picker === "end"}
+                  onPress={() => setPicker((v) => (v === "end" ? null : "end"))}
+                />
+              </View>
+              {picker && (
+                <MonthCalendar value={picker === "start" ? startDate : endDate} onSelect={pickDate} />
+              )}
+            </>
+          )}
+
+          {/* Price fields by deal type */}
+          {dealType === "trial" && (
+            <PriceField
+              label="After free trial"
+              value={afterTrialCost}
+              onChangeText={setAfterTrialCost}
+            />
+          )}
+          {dealType === "promo" && (
+            <>
+              <PriceField label="Promo price" value={promoCost} onChangeText={setPromoCost} />
+              <PriceField
+                label="After promotional rate"
+                value={afterPromoCost}
+                onChangeText={setAfterPromoCost}
+              />
+            </>
+          )}
+          {dealType === "full" && (
+            <PriceField label="Monthly cost" value={monthlyCost} onChangeText={setMonthlyCost} />
+          )}
 
           {/* Notify card */}
           <View style={styles.notifyCard}>
@@ -160,17 +188,6 @@ export default function AddSubscriptionScreen() {
               </View>
               <Toggle value={notify} onToggle={() => setNotify((v) => !v)} />
             </View>
-            <Segmented bg={colors.bg}>
-              <Seg active={leadDays === 3} onPress={() => setLeadDays(3)}>
-                3 days
-              </Seg>
-              <Seg active={leadDays === 5} onPress={() => setLeadDays(5)}>
-                5 days
-              </Seg>
-              <Seg active={leadDays === 7} onPress={() => setLeadDays(7)}>
-                7 days
-              </Seg>
-            </Segmented>
           </View>
         </View>
       </ScrollView>
@@ -196,6 +213,35 @@ function DateField({
         <Text style={styles.dateValue}>{formatDate(value)}</Text>
         <Ionicons name="calendar-outline" size={14} color={active ? colors.brand : wa(0.4)} />
       </Pressable>
+    </View>
+  );
+}
+
+function PriceField({
+  label,
+  value,
+  onChangeText,
+}: {
+  label: string;
+  value: string;
+  onChangeText: (value: string) => void;
+}) {
+  return (
+    <View>
+      <Text style={styles.fieldLabel}>{label}</Text>
+      <View style={styles.costField}>
+        <View style={styles.costInputWrap}>
+          <Text style={styles.costPrefix}>£</Text>
+          <TextInput
+            value={value}
+            onChangeText={onChangeText}
+            keyboardType="decimal-pad"
+            placeholder="0.00"
+            placeholderTextColor={wa(0.35)}
+            style={styles.costInput}
+          />
+        </View>
+      </View>
     </View>
   );
 }
@@ -296,17 +342,7 @@ function Toggle({ value, onToggle }: { value: boolean; onToggle: () => void }) {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.bg },
-  content: { paddingHorizontal: 24, paddingTop: 8, paddingBottom: 48 },
-
-  topBar: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 32,
-  },
-  cancel: { color: wa(0.6), fontSize: 15, fontWeight: "500" },
-  topTitle: { color: colors.white, fontSize: 14, fontWeight: "600" },
-  save: { color: colors.brand, fontSize: 15, fontWeight: "600" },
+  content: { paddingHorizontal: 24, paddingTop: 16, paddingBottom: 48 },
 
   h1: { color: colors.white, fontSize: 24, fontWeight: "700", letterSpacing: -0.5, marginBottom: 28 },
 
@@ -392,8 +428,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
   },
-  costValue: { color: colors.white, fontSize: 14, fontVariant: ["tabular-nums"] },
-  costHint: { color: wa(0.4), fontSize: 11 },
+  costInputWrap: { flexDirection: "row", alignItems: "center", gap: 2 },
+  costPrefix: { color: colors.white, fontSize: 14, fontVariant: ["tabular-nums"] },
+  costInput: {
+    color: colors.white,
+    fontSize: 14,
+    fontVariant: ["tabular-nums"],
+    minWidth: 72,
+    paddingVertical: 0,
+  },
 
   notifyCard: {
     backgroundColor: colors.card,
