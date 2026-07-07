@@ -1,17 +1,26 @@
+import { Ionicons } from "@expo/vector-icons";
 import {
   Fraunces_500Medium_Italic,
   Fraunces_600SemiBold_Italic,
   Fraunces_700Bold_Italic,
   useFonts,
 } from "@expo-google-fonts/fraunces";
-import { Stack } from "expo-router";
+import { Tabs } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
+import type { ColorValue } from "react-native";
 
-import { colors } from "@/theme";
+import { colors, wa } from "@/theme";
 
 SplashScreen.preventAutoHideAsync();
+
+type IoniconName = keyof typeof Ionicons.glyphMap;
+const tabIcon =
+  (outline: IoniconName, solid: IoniconName) =>
+  ({ color, size, focused }: { color: ColorValue; size: number; focused: boolean }) => (
+    <Ionicons name={focused ? solid : outline} size={size} color={color} />
+  );
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
@@ -29,15 +38,32 @@ export default function RootLayout() {
   return (
     <>
       <StatusBar style="light" />
-      <Stack
+      <Tabs
         screenOptions={{
           headerShown: false,
-          contentStyle: { backgroundColor: colors.bg },
+          sceneStyle: { backgroundColor: colors.bg },
+          tabBarActiveTintColor: colors.brand,
+          tabBarInactiveTintColor: wa(0.4),
+          tabBarLabelStyle: { fontSize: 11, fontWeight: "600" },
+          tabBarStyle: {
+            backgroundColor: colors.bg,
+            borderTopColor: wa(0.06),
+          },
         }}
       >
-        <Stack.Screen name="index" />
-        <Stack.Screen name="add" options={{ presentation: "modal" }} />
-      </Stack>
+        <Tabs.Screen
+          name="index"
+          options={{ title: "Home", tabBarIcon: tabIcon("home-outline", "home") }}
+        />
+        <Tabs.Screen
+          name="add"
+          options={{ title: "Add", tabBarIcon: tabIcon("add-circle-outline", "add-circle") }}
+        />
+        <Tabs.Screen
+          name="news"
+          options={{ title: "News", tabBarIcon: tabIcon("newspaper-outline", "newspaper") }}
+        />
+      </Tabs>
     </>
   );
 }

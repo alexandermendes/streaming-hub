@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -31,6 +31,12 @@ export default function AddSubscriptionScreen() {
   const [selectedId, setSelectedId] = useState<PlatformId>(
     isPlatformId(platform) ? platform : "paramount",
   );
+
+  // Keep selection in sync when arriving from a Home tap (the Add tab may
+  // already be mounted, so the initial state above won't re-run).
+  useEffect(() => {
+    if (isPlatformId(platform)) setSelectedId(platform);
+  }, [platform]);
   const [open, setOpen] = useState(false);
   const [startDate, setStartDate] = useState(new Date(2024, 4, 12));
   const [endDate, setEndDate] = useState(new Date(2024, 7, 12));
@@ -48,15 +54,15 @@ export default function AddSubscriptionScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.safe} edges={["top", "bottom"]}>
+    <SafeAreaView style={styles.safe} edges={["top"]}>
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         {/* Top bar */}
         <View style={styles.topBar}>
-          <Pressable onPress={() => router.back()} hitSlop={8}>
+          <Pressable onPress={() => router.navigate("/")} hitSlop={8}>
             <Text style={styles.cancel}>Cancel</Text>
           </Pressable>
           <Text style={styles.topTitle}>New service</Text>
-          <Pressable onPress={() => router.back()} hitSlop={8}>
+          <Pressable onPress={() => router.navigate("/")} hitSlop={8}>
             <Text style={styles.save}>Save</Text>
           </Pressable>
         </View>
