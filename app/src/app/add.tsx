@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { PlatformLogo } from "@/components/streamers";
+import { PlatformLogo, RtTopBar } from "@/components/streamers";
 import { platformById, platforms, type PlatformId } from "@/data/streamers";
 import { colors, radius, wa } from "@/theme";
 
@@ -67,16 +67,7 @@ export default function AddSubscriptionScreen() {
   return (
     <SafeAreaView style={styles.safe} edges={["top"]}>
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-        {/* Top bar */}
-        <View style={styles.topBar}>
-          <Pressable onPress={() => router.navigate("/")} hitSlop={8}>
-            <Text style={styles.cancel}>Cancel</Text>
-          </Pressable>
-          <Text style={styles.topTitle}>New service</Text>
-          <Pressable onPress={() => router.navigate("/")} hitSlop={8}>
-            <Text style={styles.save}>Save</Text>
-          </Pressable>
-        </View>
+        <RtTopBar />
 
         <Text style={styles.h1}>Log a new subscription</Text>
 
