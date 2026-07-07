@@ -24,16 +24,17 @@ export type Platform = {
   bg: string;
   fg: string;
   active: boolean;
+  pricePerMonth: number; // base monthly price in £
 };
 
 export const platforms: Platform[] = [
-  { id: "netflix", name: "Netflix", short: "N", bg: "#000000", fg: "#E50914", active: true },
-  { id: "disney", name: "Disney+", short: "Disney+", bg: "#0E2A6B", fg: "#ffffff", active: true },
-  { id: "appletv", name: "Apple TV+", short: "tv+", bg: "#000000", fg: "#ffffff", active: true },
-  { id: "itvx", name: "ITVX", short: "ITVX", bg: "#101820", fg: "#ffd400", active: true },
-  { id: "paramount", name: "Paramount+", short: "P+", bg: "#0064FF", fg: "#ffffff", active: false },
-  { id: "now", name: "NOW", short: "NOW", bg: "#001E3C", fg: "#00d1a6", active: false },
-  { id: "prime", name: "Prime Video", short: "prime", bg: "#00A8E1", fg: "#ffffff", active: false },
+  { id: "netflix",   name: "Netflix",      short: "N",      bg: "#000000", fg: "#E50914", active: true,  pricePerMonth: 17.99 },
+  { id: "disney",    name: "Disney+",      short: "Disney+",bg: "#0E2A6B", fg: "#ffffff", active: true,  pricePerMonth: 4.99  },
+  { id: "appletv",   name: "Apple TV+",    short: "tv+",    bg: "#000000", fg: "#ffffff", active: true,  pricePerMonth: 8.99  },
+  { id: "itvx",      name: "ITVX",         short: "ITVX",   bg: "#101820", fg: "#ffd400", active: true,  pricePerMonth: 5.99  },
+  { id: "paramount", name: "Paramount+",   short: "P+",     bg: "#0064FF", fg: "#ffffff", active: false, pricePerMonth: 6.99  },
+  { id: "now",       name: "NOW",          short: "NOW",    bg: "#001E3C", fg: "#00d1a6", active: false, pricePerMonth: 9.99  },
+  { id: "prime",     name: "Prime Video",  short: "prime",  bg: "#00A8E1", fg: "#ffffff", active: false, pricePerMonth: 8.99  },
 ];
 
 export const platformById = (id: PlatformId) => platforms.find((p) => p.id === id)!;
@@ -42,16 +43,20 @@ export type Deal = {
   platform: PlatformId;
   label: string;
   price: string;
+  priceNum: number; // numeric £ value for calculations
   progress: number; // 0..100
   started: string;
   endsInDays: number;
 };
 
 export const activeDeals: Deal[] = [
-  { platform: "disney", label: "Annual promo rate", price: "£1.99", progress: 65, started: "Started 12 Jan", endsInDays: 42 },
-  { platform: "appletv", label: "Free trial", price: "£0.00", progress: 80, started: "Started 25 Apr", endsInDays: 5 },
-  { platform: "itvx", label: "Premium • Monthly", price: "£5.99", progress: 25, started: "Started 02 May", endsInDays: 22 },
+  { platform: "disney",  label: "Annual promo rate", price: "£1.99", priceNum: 1.99, progress: 65, started: "Started 12 Jan", endsInDays: 42 },
+  { platform: "appletv", label: "Free trial",        price: "£0.00", priceNum: 0.00, progress: 80, started: "Started 25 Apr", endsInDays: 5  },
+  { platform: "itvx",    label: "Premium • Monthly", price: "£5.99", priceNum: 5.99, progress: 25, started: "Started 02 May", endsInDays: 22 },
 ];
+
+/** Total spend the previous calendar month — used for the month-on-month delta. */
+export const lastMonthTotal = 1.98;
 
 export type Offer = {
   id: string;
