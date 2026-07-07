@@ -16,6 +16,16 @@ import { colors, radius, serif, wa } from "@/theme";
 
 const FILTERS = ["All", "Free trial", "Under £5", "Annual saver", "Bundles"];
 
+const EXPIRY_MODAL_KEY = 'expiryModalShown';
+const hasShownExpiryModal = () => {
+  try { return sessionStorage.getItem(EXPIRY_MODAL_KEY) === 'true'; }
+  catch { return false; }
+};
+const markExpiryModalShown = () => {
+  try { sessionStorage.setItem(EXPIRY_MODAL_KEY, 'true'); }
+  catch { /* noop for native */ }
+};
+
 const pressedStyle = ({ pressed }: { pressed: boolean }) => (pressed ? styles.pressed : null);
 
 export default function HubScreen() {
@@ -27,7 +37,8 @@ export default function HubScreen() {
   const expiringDeals = activeDeals.filter((d) => d.endsInDays <= 7);
 
   useEffect(() => {
-    if (expiringDeals.length > 0) {
+    if (expiringDeals.length > 0 && !hasShownExpiryModal()) {
+      markExpiryModalShown();
       setExpiringDeal(expiringDeals[0]);
       setExpiryModalVisible(true);
     }
