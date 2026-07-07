@@ -70,6 +70,36 @@ export const offers: Offer[] = [
   { id: "prime-1", platform: "prime", headline: "30-day free trial", detail: "Then £8.99/mo. Includes Prime delivery.", badge: "Free trial", badgeTone: "new", expires: "Always on" },
 ];
 
+/* ── Screen 3 (My Watchlist) ── */
+export type WatchStatus = "now" | "soon" | "elsewhere";
+
+export type WatchTitle = {
+  id: string;
+  title: string;
+  genre: string;
+  rt: string;
+  status: WatchStatus;
+  statusLabel: string;
+  platform: PlatformId;
+  gradient: [string, string, string]; // poster fallback behind the image
+  image?: string;
+};
+
+export const watchlist: WatchTitle[] = [
+  { id: "bear", title: "The Bear", genre: "Drama", rt: "4.8", status: "now", statusLabel: "Season 3 · Available now", platform: "netflix", gradient: ["#3a0d0d", "#7a1a1a", "#c44a2a"], image: "https://media.themoviedb.org/t/p/w500/eKfVzzEazSIjJMrw9ADa2x8ksLz.jpg" },
+  { id: "succ", title: "Succession", genre: "Drama", rt: "4.9", status: "now", statusLabel: "Complete series", platform: "now", gradient: ["#0a0a0a", "#1f1f1f", "#4a4a4a"], image: "https://media.themoviedb.org/t/p/w500/z0XiwdrCQ9yVIr4O0pxzaAYRxdW.jpg" },
+  { id: "mirror", title: "Black Mirror", genre: "Sci-Fi", rt: "4.2", status: "soon", statusLabel: "Drops 24 October", platform: "netflix", gradient: ["#050505", "#1a1a3a", "#3a2a6a"], image: "https://media.themoviedb.org/t/p/w500/seN6rRfN0I6n8iDXjlSMk1QjNcq.jpg" },
+  { id: "lotus", title: "The White Lotus", genre: "Drama", rt: "4.5", status: "elsewhere", statusLabel: "Only on NOW / Sky", platform: "now", gradient: ["#4a3a1a", "#a07a3a", "#e0c478"], image: "https://media.themoviedb.org/t/p/w500/gbSaK9v1CbcYH1ISgbM7XObD2dW.jpg" },
+];
+
+export type Recommendation = { id: string; title: string; gradient: [string, string, string]; image?: string };
+
+export const recommendations: Recommendation[] = [
+  { id: "severance", title: "Severance", gradient: ["#0a1a2a", "#1a3a5a", "#4a7aaa"], image: "https://media.themoviedb.org/t/p/w500/pPHpeI2X1qEd1CS1SeyrdhZ4qnT.jpg" },
+  { id: "silo", title: "Silo", gradient: ["#1a1010", "#3a2010", "#7a5030"], image: "https://media.themoviedb.org/t/p/w500/fDMTqUcEh6qJwWZP1SHTfoaqsCy.jpg" },
+  { id: "ted", title: "Ted Lasso", gradient: ["#1a2a1a", "#3a5a3a", "#a0c0a0"], image: "https://media.themoviedb.org/t/p/w500/5fhZdwP1DVJ0FyVH6vrFdHwpXIn.jpg" },
+];
+
 /* ── Screen 4 (News / Upcoming) — reasons-to-subscribe highlights ── */
 export type UpcomingItem = {
   id: string;

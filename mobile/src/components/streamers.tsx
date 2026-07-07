@@ -1,9 +1,54 @@
 import { Ionicons } from "@expo/vector-icons";
+import { Image } from "expo-image";
+import { LinearGradient } from "expo-linear-gradient";
 import type { ReactNode } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import type { Platform } from "@/data/streamers";
 import { colors, radius, wa } from "@/theme";
+
+/* ─────────── Poster (gradient fallback + TMDB image + scrim) ─────────── */
+const POSTER_SCRIM = ["transparent", "rgba(0,0,0,0.7)"] as const;
+
+export function Poster({
+  title,
+  image,
+  gradient,
+  size = "md",
+  grayscale,
+}: {
+  title: string;
+  image?: string;
+  gradient: [string, string, string];
+  size?: "sm" | "md";
+  grayscale?: boolean;
+}) {
+  return (
+    <View style={[styles.poster, size === "sm" ? styles.posterSm : styles.posterMd]}>
+      <LinearGradient
+        colors={gradient}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={StyleSheet.absoluteFill}
+      />
+      {image && (
+        <Image
+          source={{ uri: image }}
+          style={[StyleSheet.absoluteFill, grayscale && { opacity: 0.45 }]}
+          contentFit="cover"
+          transition={200}
+        />
+      )}
+      <LinearGradient colors={POSTER_SCRIM} style={StyleSheet.absoluteFill} />
+      {!image && (
+        <Text style={styles.posterTitle} numberOfLines={3}>
+          {title}
+        </Text>
+      )}
+      <Text style={styles.posterRt}>RT</Text>
+    </View>
+  );
+}
 
 /* ─────────── Platform logo (coloured tile with short label) ─────────── */
 export function PlatformLogo({ p, size = 56 }: { p: Platform; size?: number }) {
@@ -131,6 +176,28 @@ export function SectionLabel({
 }
 
 const styles = StyleSheet.create({
+  poster: { borderRadius: 8, overflow: "hidden", justifyContent: "flex-end" },
+  posterMd: { width: 96, height: 144 },
+  posterSm: { width: "100%", aspectRatio: 3 / 4 },
+  posterTitle: {
+    position: "absolute",
+    left: 8,
+    right: 8,
+    bottom: 8,
+    color: colors.white,
+    fontWeight: "900",
+    fontSize: 13,
+    lineHeight: 14,
+  },
+  posterRt: {
+    position: "absolute",
+    top: 6,
+    left: 6,
+    color: wa(0.6),
+    fontSize: 7,
+    fontWeight: "700",
+    letterSpacing: 1,
+  },
   logo: { alignItems: "center", justifyContent: "center" },
   appletvRing: { borderWidth: 1, borderColor: wa(0.15) },
   tile: { alignItems: "center", gap: 8, flexShrink: 0 },

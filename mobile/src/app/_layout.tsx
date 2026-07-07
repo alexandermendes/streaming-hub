@@ -56,12 +56,16 @@ export default function RootLayout() {
           options={{ title: "Home", tabBarIcon: tabIcon("home-outline", "home") }}
         />
         <Tabs.Screen
-          name="add"
-          options={{ title: "Add", tabBarIcon: tabIcon("add-circle-outline", "add-circle") }}
+          name="watchlist"
+          options={{ title: "Watchlist", tabBarIcon: tabIcon("bookmark-outline", "bookmark") }}
         />
         <Tabs.Screen
           name="news"
           options={{ title: "News", tabBarIcon: tabIcon("newspaper-outline", "newspaper") }}
+        />
+        <Tabs.Screen
+          name="add"
+          options={{ title: "Add", tabBarIcon: tabIcon("add-circle-outline", "add-circle") }}
         />
       </Tabs>
     </>
