@@ -24,6 +24,12 @@ const pad = (n: number) => String(n).padStart(2, "0");
 const formatDate = (d: Date) => `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()}`;
 const sameDay = (a: Date, b: Date) =>
   a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+const maskPriceInput = (input: string) => {
+  const digits = input.replace(/\D/g, "");
+  if (!digits) return "";
+  const value = Number(digits) / 100;
+  return value.toFixed(2);
+};
 
 const defaultStartDate = new Date();
 const defaultEndDate = new Date(defaultStartDate);
@@ -225,11 +231,13 @@ function PriceField({
           <Text style={styles.costPrefix}>£</Text>
           <TextInput
             value={value}
-            onChangeText={onChangeText}
+            onChangeText={(text) => onChangeText(maskPriceInput(text))}
             keyboardType="decimal-pad"
             placeholder="0.00"
             placeholderTextColor={wa(0.35)}
             style={styles.costInput}
+            maxLength={12}
+            underlineColorAndroid="transparent"
           />
         </View>
       </View>
@@ -427,6 +435,9 @@ const styles = StyleSheet.create({
     fontVariant: ["tabular-nums"],
     minWidth: 72,
     paddingVertical: 0,
+    borderWidth: 0,
+    outlineWidth: 0,
+    outlineColor: "transparent",
   },
 
   notifyCard: {

@@ -11,6 +11,7 @@ import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 import type { ColorValue } from "react-native";
 
+import "../global.css";
 import { colors, wa } from "@/theme";
 
 SplashScreen.preventAutoHideAsync();
