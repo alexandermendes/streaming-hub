@@ -1,5 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -11,8 +11,9 @@ import { colors, radius, wa } from "@/theme";
 const isPlatformId = (v: unknown): v is PlatformId => platforms.some((p) => p.id === v);
 
 type DealType = "trial" | "promo" | "full";
+type BillingCycle = "monthly" | "annual";
 type LeadDays = 3 | 5 | 7;
-type ActivePicker = "start" | "end" | null;
+type ActivePicker = "start" | "end" | "cancel" | null;
 
 const MONTHS = [
   "January", "February", "March", "April", "May", "June",
@@ -34,8 +35,11 @@ const maskPriceInput = (input: string) => {
 const defaultStartDate = new Date();
 const defaultEndDate = new Date(defaultStartDate);
 defaultEndDate.setDate(defaultEndDate.getDate() + 7);
+const defaultCancelReminderDate = new Date();
+defaultCancelReminderDate.setDate(defaultCancelReminderDate.getDate() + 30);
 
 export default function AddSubscriptionScreen() {
+  const router = useRouter();
   const { platform } = useLocalSearchParams<{ platform?: string }>();
   const [selectedId, setSelectedId] = useState<PlatformId>(
     isPlatformId(platform) ? platform : "paramount",
@@ -51,9 +55,12 @@ export default function AddSubscriptionScreen() {
   const [endDate, setEndDate] = useState(defaultEndDate);
   const [dealType, setDealType] = useState<DealType>("trial");
   const [leadDays, setLeadDays] = useState<LeadDays>(5);
-  const [notify, setNotify] = useState(true);
+  const [notify, setNotify] = useState(false);
   const [picker, setPicker] = useState<ActivePicker>(null);
+  const [cancelReminderDate, setCancelReminderDate] = useState(defaultCancelReminderDate);
+  const [fullBillingCycle, setFullBillingCycle] = useState<BillingCycle>("monthly");
   const [monthlyCost, setMonthlyCost] = useState("6.99");
+  const [annualCost, setAnnualCost] = useState("69.99");
   const [afterTrialCost, setAfterTrialCost] = useState("6.99");
   const [promoCost, setPromoCost] = useState("2.99");
   const [afterPromoCost, setAfterPromoCost] = useState("6.99");
@@ -62,11 +69,16 @@ export default function AddSubscriptionScreen() {
     if (dealType === "full") setPicker(null);
   }, [dealType]);
 
+  useEffect(() => {
+    if (!notify && picker === "cancel") setPicker(null);
+  }, [notify, picker]);
+
   const selected = platformById(selectedId);
 
   const pickDate = (d: Date) => {
     if (picker === "start") setStartDate(d);
     else if (picker === "end") setEndDate(d);
+    else if (picker === "cancel") setCancelReminderDate(d);
     setPicker(null);
   };
 
@@ -163,31 +175,83 @@ export default function AddSubscriptionScreen() {
             />
           )}
           {dealType === "promo" && (
-            <>
-              <PriceField label="Promo price" value={promoCost} onChangeText={setPromoCost} />
-              <PriceField
-                label="After promotional rate"
-                value={afterPromoCost}
-                onChangeText={setAfterPromoCost}
-              />
-            </>
+            <View style={styles.dateRow}>
+              <View style={{ flex: 1 }}>
+                <PriceField label="Promo price" value={promoCost} onChangeText={setPromoCost} />
+              </View>
+              <View style={{ flex: 1 }}>
+                <PriceField
+                  label="After promotional rate"
+                  value={afterPromoCost}
+                  onChangeText={setAfterPromoCost}
+                />
+              </View>
+            </View>
           )}
           {dealType === "full" && (
-            <PriceField label="Monthly cost" value={monthlyCost} onChangeText={setMonthlyCost} />
+            <>
+              <View>
+                <Text style={styles.fieldLabel}>Billing cycle</Text>
+                <Segmented>
+                  <Seg active={fullBillingCycle === "monthly"} onPress={() => setFullBillingCycle("monthly")}>
+                    Monthly
+                  </Seg>
+                  <Seg active={fullBillingCycle === "annual"} onPress={() => setFullBillingCycle("annual")}>
+                    Annually
+                  </Seg>
+                </Segmented>
+              </View>
+
+              {fullBillingCycle === "monthly" ? (
+                <PriceField label="Monthly cost" value={monthlyCost} onChangeText={setMonthlyCost} />
+              ) : (
+                <PriceField label="Annual cost" value={annualCost} onChangeText={setAnnualCost} />
+              )}
+
+              <View style={styles.notifyCard}>
+                <View style={styles.notifyTop}>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.notifyTitle}>Remind me to cancel</Text>
+                    <Text style={styles.notifySub}>Set when we should send your reminder.</Text>
+                  </View>
+                  <Toggle value={notify} onToggle={() => setNotify((v) => !v)} />
+                </View>
+                {notify && (
+                  <DateField
+                    label="Reminder date"
+                    value={cancelReminderDate}
+                    active={picker === "cancel"}
+                    onPress={() => setPicker((v) => (v === "cancel" ? null : "cancel"))}
+                  />
+                )}
+              </View>
+              {notify && picker === "cancel" && <MonthCalendar value={cancelReminderDate} onSelect={pickDate} />}
+            </>
           )}
 
           {/* Notify card */}
-          <View style={styles.notifyCard}>
-            <View style={styles.notifyTop}>
-              <View style={{ flex: 1 }}>
-                <Text style={styles.notifyTitle}>Notify me before deal ends</Text>
-                <Text style={styles.notifySub}>Avoid surprise charges.</Text>
+          {dealType !== "full" && (
+            <View style={styles.notifyCard}>
+              <View style={styles.notifyTop}>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.notifyTitle}>Remind me before deal ends</Text>
+                  <Text style={styles.notifySub}>Avoid surprise charges.</Text>
+                </View>
+                <Toggle value={notify} onToggle={() => setNotify((v) => !v)} />
               </View>
-              <Toggle value={notify} onToggle={() => setNotify((v) => !v)} />
             </View>
-          </View>
+          )}
         </View>
       </ScrollView>
+
+      <View style={styles.saveBar}>
+        <Pressable
+          style={({ pressed }) => [styles.saveBtn, pressed && { opacity: 0.8 }]}
+          onPress={() => router.navigate("/")}
+        >
+          <Text style={styles.saveBtnText}>Save subscription</Text>
+        </Pressable>
+      </View>
     </SafeAreaView>
   );
 }
@@ -454,4 +518,19 @@ const styles = StyleSheet.create({
 
   toggle: { width: 44, height: 28, borderRadius: radius.full, justifyContent: "center" },
   knob: { position: "absolute", width: 20, height: 20, borderRadius: 10, backgroundColor: colors.black },
+
+  saveBar: {
+    paddingHorizontal: 24,
+    paddingTop: 12,
+    paddingBottom: 24,
+    backgroundColor: colors.bg,
+  },
+  saveBtn: {
+    backgroundColor: colors.brand,
+    borderRadius: radius.xl,
+    height: 52,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  saveBtnText: { color: colors.black, fontSize: 15, fontWeight: "700" },
 });

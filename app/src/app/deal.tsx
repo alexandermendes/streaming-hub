@@ -2,6 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { useLocalSearchParams, useRouter } from "expo-router";
+import { useState } from "react";
 import * as WebBrowser from "expo-web-browser";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -19,6 +20,7 @@ const gbp = (n: number) => (n <= 0.001 ? "Free" : `£${n.toFixed(2)}`);
 export default function DealScreen() {
   const router = useRouter();
   const { platform } = useLocalSearchParams<{ platform?: string }>();
+  const [notify, setNotify] = useState(false);
   const deal = activeDeals.find((d) => d.platform === platform);
 
   const goBack = () => (router.canGoBack() ? router.back() : router.navigate("/"));
@@ -239,23 +241,34 @@ export default function DealScreen() {
 
         {/* Actions */}
         <View style={styles.actions}>
-          <Pressable
-            onPress={goBack}
-            style={({ pressed }) => [styles.primaryBtn, pressed && styles.pressed]}
-          >
-            <Ionicons name="notifications-outline" size={16} color={colors.black} />
-            <Text style={styles.primaryText}>Remind me before it ends</Text>
-          </Pressable>
-          <Pressable
-            onPress={openCancel}
-            style={({ pressed }) => [styles.ghostBtn, pressed && styles.pressed]}
-          >
-            <Ionicons name="open-outline" size={14} color={colors.urgent} />
-            <Text style={styles.ghostText}>Cancel on {p.name}</Text>
+          <View style={styles.notifyCard}>
+            <View style={styles.notifyTop}>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.notifyTitle}>Remind me before deal ends</Text>
+                <Text style={styles.notifySub}>Avoid surprise charges.</Text>
+              </View>
+              <Toggle value={notify} onToggle={() => setNotify((v) => !v)} />
+            </View>
+          </View>
+          <Pressable style={({ pressed }) => [styles.ghostBtn, pressed && styles.pressed]}>
+            <Text style={styles.ghostText}>Cancel this subscription</Text>
           </Pressable>
         </View>
       </ScrollView>
     </SafeAreaView>
+  );
+}
+
+function Toggle({ value, onToggle }: { value: boolean; onToggle: () => void }) {
+  return (
+    <Pressable
+      onPress={onToggle}
+      style={[styles.toggle, { backgroundColor: value ? colors.brand : wa(0.15) }]}
+      accessibilityRole="switch"
+      accessibilityState={{ checked: value }}
+    >
+      <View style={[styles.knob, value ? { right: 4 } : { left: 4 }]} />
+    </Pressable>
   );
 }
 
@@ -384,24 +397,25 @@ const styles = StyleSheet.create({
   emptyCardText: { color: wa(0.5), fontSize: 13, textAlign: "center" },
 
   actions: { gap: 12, marginTop: 8 },
-  primaryBtn: {
-    backgroundColor: colors.brand,
-    borderRadius: radius.lg,
-    height: 52,
+  notifyCard: {
+    backgroundColor: colors.card,
+    padding: 20,
+    borderRadius: radius.xl,
+    borderWidth: 1,
+    borderColor: wa(0.05),
+  },
+  notifyTop: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
+    justifyContent: "space-between",
   },
-  primaryText: { color: colors.black, fontSize: 14, fontWeight: "700" },
-  ghostBtn: {
-    height: 44,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 6,
-  },
+  notifyTitle: { color: colors.white, fontSize: 14, fontWeight: "700" },
+  notifySub: { color: wa(0.4), fontSize: 11, marginTop: 2 },
+  ghostBtn: { height: 44, alignItems: "center", justifyContent: "center" },
   ghostText: { color: colors.urgent, fontSize: 13, fontWeight: "600" },
+
+  toggle: { width: 44, height: 28, borderRadius: radius.full, justifyContent: "center" },
+  knob: { position: "absolute", width: 20, height: 20, borderRadius: 10, backgroundColor: colors.black },
 
   emptyState: { flex: 1, alignItems: "center", justifyContent: "center" },
   emptyText: { color: wa(0.5), fontSize: 14 },
