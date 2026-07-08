@@ -45,13 +45,13 @@ export default function RootLayout() {
           sceneStyle: { backgroundColor: colors.bg },
           tabBarActiveTintColor: colors.brand,
           tabBarInactiveTintColor: wa(0.4),
-          tabBarLabelStyle: { fontSize: 11, fontWeight: "600" },
+          tabBarLabelStyle: { fontSize: 11, fontWeight: "600", lineHeight: 14 },
           tabBarStyle: {
             backgroundColor: colors.bg,
             borderTopColor: wa(0.06),
             paddingBottom: 8,
-            paddingTop: 6,
-            height: 64,
+            paddingTop: 2,
+            minHeight: 64,
           },
         }}
       >

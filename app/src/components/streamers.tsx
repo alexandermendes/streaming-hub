@@ -9,6 +9,7 @@ import { colors, radius, wa } from "@/theme";
 
 /* ─────────── Poster (gradient fallback + TMDB image + scrim) ─────────── */
 const POSTER_SCRIM = ["transparent", "rgba(0,0,0,0.7)"] as const;
+const BG_TO_TRANSPARENT = [colors.bg, `${colors.bg}00`] as const;
 
 export function Poster({
   title,
@@ -125,9 +126,9 @@ export function AddPlatformTile({ onPress }: { onPress?: () => void }) {
 }
 
 /* ─────────── Radio Times top bar (wordmark + avatar) ─────────── */
-export function RtTopBar() {
+export function RtTopBar({ bottomSpacing = 16 }: { bottomSpacing?: number }) {
   return (
-    <View style={styles.topBar}>
+    <View style={[styles.topBar, { marginBottom: bottomSpacing }] }>
       <View style={{ width: 36 }} />
       <Image
         source={require("../../assets/images/logo.webp")}
@@ -135,6 +136,27 @@ export function RtTopBar() {
         contentFit="contain"
       />
       <Ionicons name="person-circle-outline" size={36} color={wa(0.7)} />
+    </View>
+  );
+}
+
+export function StickyTopBar({
+  topInset = 16,
+  barBottomSpacing = 16,
+}: {
+  topInset?: number;
+  barBottomSpacing?: number;
+}) {
+  return (
+    <View style={[styles.stickyTopBar, { paddingTop: topInset }]}>
+      <RtTopBar bottomSpacing={barBottomSpacing} />
+      <LinearGradient
+        pointerEvents="none"
+        colors={BG_TO_TRANSPARENT}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
+        style={styles.stickyFade}
+      />
     </View>
   );
 }
@@ -228,7 +250,18 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 24,
+  },
+  stickyTopBar: {
+    backgroundColor: colors.bg,
+    position: "relative",
+    zIndex: 1,
+  },
+  stickyFade: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: -24,
+    height: 24,
   },
   wordmarkLogo: { width: 168, height: 30 },
   avatar: {
@@ -242,10 +275,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   avatarText: { color: colors.white, fontSize: 10, fontWeight: "700", letterSpacing: 1 },
-  eyebrow: { color: wa(0.4), fontSize: 11, fontWeight: "500", marginBottom: 4 },
-  headerTitle: { color: colors.white, fontSize: 26, fontWeight: "700", letterSpacing: -0.5 },
+  eyebrow: { color: wa(0.4), fontSize: 12, textAlign: "center", marginBottom: 4 },
+  headerTitle: { color: colors.white, fontSize: 22, fontWeight: "700", letterSpacing: -0.5, textAlign: "center" },
   sectionRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "baseline" },
   sectionTitle: { color: colors.white, fontSize: 16, fontWeight: "700", letterSpacing: -0.3 },
   viewAll: { color: colors.brand, fontSize: 12, fontWeight: "500" },
-  sectionSub: { color: wa(0.4), fontSize: 11, marginTop: 2 },
+  sectionSub: { color: wa(0.4), fontSize: 11, marginTop: 24 },
 });

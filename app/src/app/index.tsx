@@ -8,8 +8,8 @@ import {
   AddPlatformTile,
   PlatformLogo,
   PlatformTile,
-  ScreenHeader,
   SectionLabel,
+  StickyTopBar,
 } from "@/components/streamers";
 import { activeDeals, lastMonthTotal, offers, platformById, platforms, type PlatformId } from "@/data/streamers";
 import { colors, radius, serif, wa } from "@/theme";
@@ -82,8 +82,13 @@ export default function HubScreen() {
       <ScrollView
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
+        stickyHeaderIndices={[0]}
       >
-        <ScreenHeader title="Your Subscriptions" />
+        <StickyTopBar topInset={16} barBottomSpacing={0} />
+
+        <View style={styles.headingBlock}>
+          <Text style={styles.title}>Your Subscriptions</Text>
+        </View>
 
         {/* Expiry banner */}
         {expiryBannerVisible && expiringDeal && (
@@ -278,7 +283,15 @@ export default function HubScreen() {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.bg },
-  content: { paddingHorizontal: 24, paddingTop: 16, paddingBottom: 48 },
+  content: { paddingHorizontal: 24, paddingTop: 0, paddingBottom: 48 },
+  headingBlock: { marginTop: 12, marginBottom: 24 },
+  title: {
+    color: colors.white,
+    fontSize: 22,
+    fontWeight: "700",
+    letterSpacing: -0.5,
+    textAlign: "center",
+  },
   section: { marginBottom: 32 },
   rail: { gap: 16, paddingVertical: 4, paddingRight: 8 },
   pressed: { opacity: 0.6 },
