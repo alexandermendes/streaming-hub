@@ -5,7 +5,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { PostWatchSheet } from "@/components/post-watch-sheet";
 import { PlatformTile, Poster, SectionLabel, StickyTopBar } from "@/components/streamers";
-import { activeDeals, platformById, platforms, watchlist, type PlatformId, type WatchTitle } from "@/data/streamers";
+import { useActiveDeals } from "@/data/subscriptions";
+import { platformById, platforms, watchlist, type PlatformId, type WatchTitle } from "@/data/streamers";
 import { colors, radius, wa } from "@/theme";
 
 const SECTIONS = [
@@ -14,26 +15,13 @@ const SECTIONS = [
 ] as const;
 
 export default function WatchlistScreen() {
+  const activeDeals = useActiveDeals();
   const dealPlatforms = platforms.filter((p) => activeDeals.some((d) => d.platform === p.id));
   const [selected, setSelected] = useState<PlatformId>(dealPlatforms[0]?.id ?? "netflix");
   const [watched, setWatched] = useState<{ id: string; title: string; subtitle: string; platform: PlatformId } | null>(null);
   const [watchedIds, setWatchedIds] = useState<Set<string>>(new Set());
   const [showAllNow, setShowAllNow] = useState(false);
   const [activeTab, setActiveTab] = useState<'watchlist' | 'watched'>('watchlist');
-
-  const handleMarkWatched = (t: WatchTitle) => {
-    setWatched({ title: t.title, subtitle: t.statusLabel });
-  };
-
-  const handleSheetClose = () => {
-    if (watched) {
-      const item = watchlist.find((w) => w.title === watched.title);
-      if (item) {
-        setWatchedIds((prev) => new Set(prev).add(item.id));
-      }
-    }
-    setWatched(null);
-  };
 
   const watchedItems = watchlist.filter(
     (w) => watchedIds.has(w.id) && w.platform === selected,
@@ -148,7 +136,7 @@ export default function WatchlistScreen() {
                   />
                   <View style={styles.rowBody}>
                     <Text style={styles.rowTitle}>{t.title}</Text>
-                    <View style={styles.watchedBadge}>
+                    <View style={styles.watchedStatus}>
                       <Ionicons name="checkmark-circle" size={14} color={colors.brand} />
                       <Text style={styles.watchedText}>Watched</Text>
                     </View>
@@ -209,7 +197,7 @@ function WatchRow({ t, onMarkWatched, isWatched = false }: { t: WatchTitle; onMa
         {isWatched && (
           <Pressable
             onPress={onMarkWatched}
-            style={({ pressed }) => [styles.watchedBadge, pressed && styles.pressed]}
+            style={({ pressed }) => [styles.watchAgainBadge, pressed && styles.pressed]}
           >
             <Text style={styles.watchedBadgeText}>✓ Watched · Watch again</Text>
           </Pressable>
@@ -257,7 +245,7 @@ const styles = StyleSheet.create({
   rowTitle: { color: colors.white, fontSize: 17, fontWeight: "700", letterSpacing: -0.3, marginBottom: 4 },
   rowStatus: { color: wa(0.5), fontSize: 12, marginBottom: 12 },
 
-  watchedBadge: {
+  watchAgainBadge: {
     alignSelf: "flex-start",
     backgroundColor: colors.brand,
     borderRadius: radius.full,
@@ -311,7 +299,7 @@ const styles = StyleSheet.create({
   tabTextActive: {
     color: colors.white,
   },
-  watchedBadge: {
+  watchedStatus: {
     flexDirection: "row",
     alignItems: "center",
     gap: 4,

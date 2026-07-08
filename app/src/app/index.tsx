@@ -5,13 +5,12 @@ import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import {
-  AddPlatformTile,
   PlatformLogo,
-  PlatformTile,
   SectionLabel,
   StickyTopBar,
 } from "@/components/streamers";
-import { activeDeals, lastMonthTotal, offers, platformById, platforms, type PlatformId } from "@/data/streamers";
+import { useActiveDeals, useLatestSavedPlatform } from "@/data/subscriptions";
+import { lastMonthTotal, offers, platformById, type Deal, type PlatformId } from "@/data/streamers";
 import { colors, radius, serif, wa } from "@/theme";
 
 const FILTERS = ["All", "Free trial", "Under £5", "Annual saver", "Bundles"];
@@ -35,27 +34,34 @@ export default function HubScreen() {
   const [showAllOffers, setShowAllOffers] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [expiryBannerVisible, setExpiryBannerVisible] = useState(false);
-  const [expiringDeal, setExpiringDeal] = useState<typeof activeDeals[number] | null>(null);
-
-  const expiringDeals = activeDeals.filter((d) => d.endsInDays <= 7);
+  const [expiringDeal, setExpiringDeal] = useState<Deal | null>(null);
+  const activeSubscriptions = useActiveDeals();
+  const latestSavedPlatform = useLatestSavedPlatform();
 
   useEffect(() => {
+    const expiringDeals = activeSubscriptions.filter((d) => d.endsInDays <= 7);
     if (expiringDeals.length > 0 && !hasShownExpiryModal()) {
       markExpiryModalShown();
       setExpiringDeal(expiringDeals[0]);
       setExpiryBannerVisible(true);
     }
-  }, []);
+  }, [activeSubscriptions]);
 
   // ── Spending summary ──────────────────────────────────────────────────────
   const totalMonthly = parseFloat(
-    activeDeals.reduce((sum, d) => sum + d.priceNum, 0).toFixed(2)
+    activeSubscriptions.reduce((sum, d) => sum + d.priceNum, 0).toFixed(2)
   );
   const diff = parseFloat((totalMonthly - lastMonthTotal).toFixed(2));
   const diffUp = diff >= 0;
   const diffLabel = `£${Math.abs(diff) % 1 === 0 ? Math.abs(diff).toFixed(0) : Math.abs(diff).toFixed(2)}`;
-  const [soonest, ...rest] = [...activeDeals].sort((a, b) => a.endsInDays - b.endsInDays);
+  const [soonest, ...rest] = [...activeSubscriptions].sort((a, b) => a.endsInDays - b.endsInDays);
   const sortedDeals = soonest ? [soonest, ...rest.sort((a, b) => b.endsInDays - a.endsInDays)] : [];
+  const displayedDeals = latestSavedPlatform
+    ? [
+        ...sortedDeals.filter((d) => d.platform === latestSavedPlatform),
+        ...sortedDeals.filter((d) => d.platform !== latestSavedPlatform),
+      ]
+    : sortedDeals;
   // ─────────────────────────────────────────────────────────────────────────
 
   const filteredOffers = searchQuery.trim()
@@ -129,7 +135,7 @@ export default function HubScreen() {
             Active deals
           </SectionLabel>
           <View style={{ gap: 12 }}>
-            {(showAllDeals ? sortedDeals : sortedDeals.slice(0, 3)).map((d) => {
+            {(showAllDeals ? displayedDeals : displayedDeals.slice(0, 3)).map((d) => {
               const p = platformById(d.platform);
               const urgent = d.endsInDays <= 7;
               return (
