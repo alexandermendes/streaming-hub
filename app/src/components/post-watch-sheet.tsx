@@ -104,13 +104,16 @@ export function PostWatchSheet({
           </View>
 
           <Pressable
-            onPress={() => Linking.openURL(PLATFORM_URL[platform])}
+            onPress={onClose}
             style={({ pressed }) => [styles.primaryBtn, pressed && styles.pressed]}
           >
-            <Text style={styles.primaryBtnText}>See all on {PLATFORM_NAME[platform]}</Text>
+            <Text style={styles.primaryBtnText}>Mark as Watched</Text>
           </Pressable>
-          <Pressable onPress={onClose} style={({ pressed }) => pressed && styles.pressed}>
-            <Text style={styles.dismiss}>See all on Apple TV+</Text>
+          <Pressable
+            onPress={() => Linking.openURL(PLATFORM_URL[platform])}
+            style={({ pressed }) => pressed && styles.pressed}
+          >
+            <Text style={styles.dismiss}>See all on {PLATFORM_NAME[platform]}</Text>
           </Pressable>
         </ScrollView>
       </View>
