@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import {
@@ -22,6 +22,8 @@ export default function HubScreen() {
   const router = useRouter();
   const [filter, setFilter] = useState("All");
   const [showAllDeals, setShowAllDeals] = useState(false);
+  const [showAllOffers, setShowAllOffers] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const [expiryBannerVisible, setExpiryBannerVisible] = useState(false);
   const [expiringDeal, setExpiringDeal] = useState<typeof activeDeals[number] | null>(null);
 
@@ -44,6 +46,19 @@ export default function HubScreen() {
   const [soonest, ...rest] = [...activeDeals].sort((a, b) => a.endsInDays - b.endsInDays);
   const sortedDeals = soonest ? [soonest, ...rest.sort((a, b) => b.endsInDays - a.endsInDays)] : [];
   // ─────────────────────────────────────────────────────────────────────────
+
+  const filteredOffers = searchQuery.trim()
+    ? offers.filter((o) => {
+        const q = searchQuery.toLowerCase();
+        const p = platformById(o.platform);
+        return (
+          p.name.toLowerCase().includes(q) ||
+          o.headline.toLowerCase().includes(q) ||
+          o.detail.toLowerCase().includes(q) ||
+          o.badge.toLowerCase().includes(q)
+        );
+      })
+    : offers;
 
   const goToAdd = (platform?: PlatformId) =>
     router.push(platform ? { pathname: "/add", params: { platform } } : "/add");
@@ -158,18 +173,26 @@ export default function HubScreen() {
 
         {/* Deals & special offers */}
         <View style={[styles.section, { marginTop: 32 }]}>
-          <SectionLabel sub="Find a better price across every platform" viewAll onViewAll={() => goToAdd()}>
+          <SectionLabel sub="Find a better price across every platform" viewAll viewAllLabel={showAllOffers ? "View less" : "View more"} onViewAll={() => setShowAllOffers((v) => !v)}>
             Deals & special offers
           </SectionLabel>
 
           {/* Search field */}
-          <Pressable style={({ pressed }) => [styles.search, pressed && styles.pressed]}>
+          <View style={styles.search}>
             <Ionicons name="search" size={16} color={wa(0.4)} />
-            <Text style={styles.searchText}>Search Netflix, Disney+, deals…</Text>
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Search Netflix, Disney+, deals…"
+              placeholderTextColor={wa(0.4)}
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+              returnKeyType="search"
+              clearButtonMode="while-editing"
+            />
             <View style={styles.livePill}>
-              <Text style={styles.livePillText}>{offers.length} live</Text>
+              <Text style={styles.livePillText}>{filteredOffers.length} live</Text>
             </View>
-          </Pressable>
+          </View>
 
           {/* Filter chips */}
           <ScrollView
@@ -199,7 +222,7 @@ export default function HubScreen() {
 
           {/* Offer cards */}
           <View style={{ gap: 12 }}>
-            {offers.map((o) => {
+            {(showAllOffers ? filteredOffers : filteredOffers.slice(0, 3)).map((o) => {
               const p = platformById(o.platform);
               const tone =
                 o.badgeTone === "hot"
@@ -346,6 +369,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   searchText: { color: wa(0.4), fontSize: 13, flex: 1 },
+  searchInput: { color: colors.white, fontSize: 13, flex: 1, paddingVertical: 0 },
   livePill: { backgroundColor: colors.brand, borderRadius: radius.full, paddingHorizontal: 8, paddingVertical: 2 },
   livePillText: { color: colors.black, fontSize: 10, fontWeight: "600" },
 
