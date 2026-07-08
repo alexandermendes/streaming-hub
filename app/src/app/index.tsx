@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { Pressable, ScrollView, StyleSheet, Text, View, Modal } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import {
@@ -21,7 +21,7 @@ const pressedStyle = ({ pressed }: { pressed: boolean }) => (pressed ? styles.pr
 export default function HubScreen() {
   const router = useRouter();
   const [filter, setFilter] = useState("All");
-  const [expiryModalVisible, setExpiryModalVisible] = useState(false);
+  const [expiryBannerVisible, setExpiryBannerVisible] = useState(false);
   const [expiringDeal, setExpiringDeal] = useState<typeof activeDeals[number] | null>(null);
 
   const expiringDeals = activeDeals.filter((d) => d.endsInDays <= 7);
@@ -29,7 +29,7 @@ export default function HubScreen() {
   useEffect(() => {
     if (expiringDeals.length > 0) {
       setExpiringDeal(expiringDeals[0]);
-      setExpiryModalVisible(true);
+      setExpiryBannerVisible(true);
     }
   }, []);
 
@@ -45,46 +45,44 @@ export default function HubScreen() {
   const goToAdd = (platform?: PlatformId) =>
     router.push(platform ? { pathname: "/add", params: { platform } } : "/add");
 
+  const goToDeal = (platform: PlatformId) =>
+    router.push({ pathname: "/deal", params: { platform } });
+
   return (
     <SafeAreaView style={styles.safe} edges={["top"]}>
-      <Modal
-        visible={expiryModalVisible}
-        transparent
-        animationType="fade"
-        onRequestClose={() => setExpiryModalVisible(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <View style={styles.modalHeader}>
-              {expiringDeal && (
-                <PlatformLogo p={platformById(expiringDeal.platform)} size={28} />
-              )}
-              <Text style={styles.modalTitle}>Subscription expiring soon</Text>
-            </View>
-            <Text style={styles.modalBody}>
-              Your {expiringDeal ? platformById(expiringDeal.platform).name : ''} deal is about to expire
-              {expiringDeal ? ` — ends in ${expiringDeal.endsInDays} day${expiringDeal.endsInDays === 1 ? '' : 's'}` : ''}.
-            </Text>
-            <Pressable
-              onPress={() => setExpiryModalVisible(false)}
-              style={({ pressed }) => [styles.modalButton, pressed && styles.pressed]}
-            >
-              <Text style={styles.modalButtonText}>Got it</Text>
-            </Pressable>
-            <Pressable
-              onPress={() => setExpiryModalVisible(false)}
-              style={({ pressed }) => [styles.modalLink, pressed && styles.pressed]}
-            >
-              <Text style={styles.modalLinkText}>Unsubscribe</Text>
-            </Pressable>
-          </View>
-        </View>
-      </Modal>
       <ScrollView
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
       >
         <ScreenHeader title="Your Subscriptions" />
+
+        {/* Expiry banner */}
+        {expiryBannerVisible && expiringDeal && (
+          <View style={styles.banner}>
+            <PlatformLogo p={platformById(expiringDeal.platform)} size={28} />
+            <View style={{ flex: 1 }}>
+              <Text style={styles.bannerTitle}>Subscription expiring soon</Text>
+              <Text style={styles.bannerBody}>
+                Your {platformById(expiringDeal.platform).name} deal is about to expire
+                {` — ends in ${expiringDeal.endsInDays} day${expiringDeal.endsInDays === 1 ? '' : 's'}`}.
+              </Text>
+              <Pressable
+                onPress={() => setExpiryBannerVisible(false)}
+                style={pressedStyle}
+              >
+                <Text style={styles.bannerLink}>Unsubscribe</Text>
+              </Pressable>
+            </View>
+            <Pressable
+              onPress={() => setExpiryBannerVisible(false)}
+              hitSlop={8}
+              style={pressedStyle}
+              accessibilityLabel="Dismiss"
+            >
+              <Ionicons name="close" size={18} color={wa(0.5)} />
+            </Pressable>
+          </View>
+        )}
 
         {/* Active deals */}
         <View style={styles.section}>
@@ -98,7 +96,7 @@ export default function HubScreen() {
               return (
                 <Pressable
                   key={d.platform}
-                  onPress={() => goToAdd(d.platform)}
+                  onPress={() => goToDeal(d.platform)}
                   style={({ pressed }) => [styles.dealCard, pressed && styles.pressed]}
                 >
                   <View style={styles.dealTop}>
@@ -369,59 +367,34 @@ const styles = StyleSheet.create({
   offerExpires: { color: wa(0.4), fontSize: 10, marginBottom: 4 },
   offerChevron: { color: colors.brand, fontSize: 18, lineHeight: 18 },
 
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: "rgba(0,0,0,0.7)",
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 32,
-  },
-  modalContent: {
+  banner: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: 12,
     backgroundColor: colors.card,
-    borderRadius: radius["3xl"],
-    padding: 24,
-    width: "100%",
-    borderWidth: 1,
-    borderColor: wa(0.1),
-  },
-  modalHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-    marginBottom: 12,
-  },
-  modalTitle: {
-    color: colors.urgent,
-    fontSize: 18,
-    fontWeight: "700",
-  },
-  modalBody: {
-    color: wa(0.7),
-    fontSize: 14,
-    lineHeight: 20,
-    marginBottom: 20,
-  },
-  modalButton: {
-    backgroundColor: colors.brand,
     borderRadius: radius.lg,
-    paddingVertical: 12,
-    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "rgba(255,122,58,0.3)",
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    marginBottom: 24,
   },
-  modalButtonText: {
-    color: colors.black,
-    fontSize: 13,
-    fontWeight: "600",
-  },
-  modalLink: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 6,
-    marginTop: 12,
-  },
-  modalLinkText: {
+  bannerTitle: {
     color: colors.urgent,
-    fontSize: 13,
+    fontSize: 14,
+    fontWeight: "700",
+    marginBottom: 2,
+  },
+  bannerBody: {
+    color: wa(0.7),
+    fontSize: 12,
+    lineHeight: 17,
+  },
+  bannerLink: {
+    color: colors.urgent,
+    fontSize: 12,
     fontWeight: "600",
+    marginTop: 8,
+    textDecorationLine: "underline",
   },
 });

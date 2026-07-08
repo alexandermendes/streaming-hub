@@ -67,6 +67,8 @@ export default function RootLayout() {
           name="add"
           options={{ title: "Add", tabBarIcon: tabIcon("add-circle-outline", "add-circle") }}
         />
+        {/* Deal detail — reachable via router.push, hidden from the tab bar. */}
+        <Tabs.Screen name="deal" options={{ href: null }} />
       </Tabs>
     </>
   );
