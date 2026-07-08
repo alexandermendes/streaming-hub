@@ -11,6 +11,7 @@ import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 import type { ColorValue } from "react-native";
 
+import "../global.css";
 import { colors, wa } from "@/theme";
 
 SplashScreen.preventAutoHideAsync();
@@ -67,6 +68,8 @@ export default function RootLayout() {
           name="add"
           options={{ title: "Add", tabBarIcon: tabIcon("add-circle-outline", "add-circle") }}
         />
+        {/* Deal detail — reachable via router.push, hidden from the tab bar. */}
+        <Tabs.Screen name="deal" options={{ href: null }} />
       </Tabs>
     </>
   );

@@ -96,6 +96,12 @@ export const watchlist: WatchTitle[] = [
   { id: "succ", title: "Succession", genre: "Drama", rt: "4.9", status: "now", statusLabel: "Complete series", platform: "now", gradient: ["#0a0a0a", "#1f1f1f", "#4a4a4a"], image: "https://media.themoviedb.org/t/p/w500/z0XiwdrCQ9yVIr4O0pxzaAYRxdW.jpg" },
   { id: "mirror", title: "Black Mirror", genre: "Sci-Fi", rt: "4.2", status: "soon", statusLabel: "Drops 24 October", platform: "netflix", gradient: ["#050505", "#1a1a3a", "#3a2a6a"], image: "https://media.themoviedb.org/t/p/w500/seN6rRfN0I6n8iDXjlSMk1QjNcq.jpg" },
   { id: "lotus", title: "The White Lotus", genre: "Drama", rt: "4.5", status: "elsewhere", statusLabel: "Only on NOW / Sky", platform: "now", gradient: ["#4a3a1a", "#a07a3a", "#e0c478"], image: "https://media.themoviedb.org/t/p/w500/gbSaK9v1CbcYH1ISgbM7XObD2dW.jpg" },
+  { id: "andor-wl", title: "Andor", genre: "Sci-Fi", rt: "4.7", status: "now", statusLabel: "Both seasons streaming", platform: "disney", gradient: ["#1a1a1a", "#3a3a4a", "#7a7a8a"], image: "https://media.themoviedb.org/t/p/w500/khZqmwHQicTYoS7Flreb9EddFZC.jpg" },
+  { id: "agatha-wl", title: "Agatha All Along", genre: "Fantasy", rt: "4.1", status: "now", statusLabel: "Season 1 · Available now", platform: "disney", gradient: ["#1a0a1a", "#4a1a4a", "#8a3a8a"], image: "https://media.themoviedb.org/t/p/w500/mGsxKwXUjojitRv2E9qMTbxbBRd.jpg" },
+  { id: "slow-wl", title: "Slow Horses", genre: "Thriller", rt: "4.6", status: "now", statusLabel: "Four seasons streaming", platform: "appletv", gradient: ["#1a1a1a", "#3a3a3a", "#7a7a7a"], image: "https://media.themoviedb.org/t/p/w500/5RuZZIouptatjV96BdPmKmRsnGg.jpg" },
+  { id: "sev-wl", title: "Severance", genre: "Sci-Fi", rt: "4.8", status: "now", statusLabel: "Season 2 · Available now", platform: "appletv", gradient: ["#0a1a2a", "#1a3a5a", "#4a7aaa"], image: "https://media.themoviedb.org/t/p/w500/pPHpeI2X1qEd1CS1SeyrdhZ4qnT.jpg" },
+  { id: "bates-wl", title: "Mr Bates vs The Post Office", genre: "Drama", rt: "4.7", status: "now", statusLabel: "Limited series · Available now", platform: "itvx", gradient: ["#0a1420", "#1a2b3a", "#3a5a6a"] },
+  { id: "rivals-wl", title: "Rivals", genre: "Drama", rt: "4.4", status: "soon", statusLabel: "New season this autumn", platform: "itvx", gradient: ["#2a0a1a", "#5a1a3a", "#a03a5a"] },
 ];
 
 export type Recommendation = { id: string; title: string; gradient: [string, string, string]; image?: string };

@@ -41,7 +41,7 @@ const appViewportFrame = `
 
   #root {
     flex: 0 0 auto;
-    width: 402px;
+    width: 400px;
     max-width: 100%;
     height: min(872px, calc(100dvh - 104px));
     max-height: 850px;
@@ -51,6 +51,7 @@ const appViewportFrame = `
     border: 1px solid rgba(255, 255, 255, 0.08);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4), 0 30px 60px -20px rgba(0, 0, 0, 0.75);
     padding: 20px 0 15px 0;
+    position: relative;
   }
 }
 `;
