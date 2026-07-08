@@ -34,7 +34,7 @@ const maskPriceInput = (input: string) => {
 
 const defaultStartDate = new Date();
 const defaultEndDate = new Date(defaultStartDate);
-defaultEndDate.setDate(defaultEndDate.getDate() + 7);
+defaultEndDate.setMonth(defaultEndDate.getMonth() + 3);
 const defaultCancelReminderDate = new Date();
 defaultCancelReminderDate.setDate(defaultCancelReminderDate.getDate() + 30);
 
@@ -53,7 +53,7 @@ export default function AddSubscriptionScreen() {
   const [open, setOpen] = useState(false);
   const [startDate, setStartDate] = useState(defaultStartDate);
   const [endDate, setEndDate] = useState(defaultEndDate);
-  const [dealType, setDealType] = useState<DealType>("trial");
+  const [dealType, setDealType] = useState<DealType>("promo");
   const [leadDays, setLeadDays] = useState<LeadDays>(5);
   const [notify, setNotify] = useState(false);
   const [picker, setPicker] = useState<ActivePicker>(null);
@@ -62,8 +62,8 @@ export default function AddSubscriptionScreen() {
   const [monthlyCost, setMonthlyCost] = useState("6.99");
   const [annualCost, setAnnualCost] = useState("69.99");
   const [afterTrialCost, setAfterTrialCost] = useState("6.99");
-  const [promoCost, setPromoCost] = useState("2.99");
-  const [afterPromoCost, setAfterPromoCost] = useState("6.99");
+  const [promoCost, setPromoCost] = useState("6.99");
+  const [afterPromoCost, setAfterPromoCost] = useState("9.99");
 
   useEffect(() => {
     if (dealType === "full") setPicker(null);
