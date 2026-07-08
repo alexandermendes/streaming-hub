@@ -7,7 +7,7 @@ It's one universal [Expo](https://expo.dev) codebase (SDK 57 · expo-router ·
 React Native Web) in `/app` that runs on **iOS, Android, and the web** from a
 single source.
 
-**Live web app:** https://immediate-media.github.io/streaming-hub/
+**Live web app:** https://immediate-media.github.io/streaming-hub-demo/
 
 ## Prerequisites
 
@@ -31,7 +31,7 @@ npm run web
 
 This builds with React Native Web and opens the app in your browser
 (http://localhost:8081). No device or simulator needed — or just visit the
-[live deployment](https://immediate-media.github.io/streaming-hub/).
+[live deployment](https://immediate-media.github.io/streaming-hub-demo/).
 
 ### As a mobile app (iOS / Android)
 
@@ -50,13 +50,13 @@ To compile and run a native build instead: `npm run ios` or `npm run android`.
 ## Deployment
 
 The web build is published to GitHub Pages at
-**https://immediate-media.github.io/streaming-hub/**.
+**https://immediate-media.github.io/streaming-hub-demo/**.
 
 Every push to `main` triggers
 [`.github/workflows/deploy-pages.yml`](.github/workflows/deploy-pages.yml),
 which runs a static Expo web export (`npm run export:web` in `/app`) and
 deploys the resulting `dist/` to Pages. Since the site is served from the
-`/streaming-hub` subpath, `app/app.json` sets `experiments.baseUrl` to match.
+`/streaming-hub-demo` subpath, `app/app.json` sets `experiments.baseUrl` to match.
 
 To produce the static build locally: `cd app && npm run export:web` (output in
 `app/dist`).
