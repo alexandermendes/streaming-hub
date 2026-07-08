@@ -21,6 +21,7 @@ const pressedStyle = ({ pressed }: { pressed: boolean }) => (pressed ? styles.pr
 export default function HubScreen() {
   const router = useRouter();
   const [filter, setFilter] = useState("All");
+  const [showAllDeals, setShowAllDeals] = useState(false);
   const [expiryBannerVisible, setExpiryBannerVisible] = useState(false);
   const [expiringDeal, setExpiringDeal] = useState<typeof activeDeals[number] | null>(null);
 
@@ -88,11 +89,16 @@ export default function HubScreen() {
 
         {/* Active deals */}
         <View style={styles.section}>
-          <SectionLabel sub="4 running this month">
+          <SectionLabel
+            sub={`${showAllDeals ? sortedDeals.length : Math.min(3, sortedDeals.length)} of ${sortedDeals.length} running this month`}
+            viewAll
+            viewAllLabel={showAllDeals ? "View less" : "View more"}
+            onViewAll={() => setShowAllDeals((v) => !v)}
+          >
             Active deals
           </SectionLabel>
           <View style={{ gap: 12 }}>
-            {sortedDeals.map((d) => {
+            {(showAllDeals ? sortedDeals : sortedDeals.slice(0, 3)).map((d) => {
               const p = platformById(d.platform);
               const urgent = d.endsInDays <= 7;
               return (

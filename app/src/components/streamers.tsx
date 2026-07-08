@@ -151,11 +151,13 @@ export function SectionLabel({
   children,
   sub,
   viewAll,
+  viewAllLabel = "View all",
   onViewAll,
 }: {
   children: ReactNode;
   sub?: string;
   viewAll?: boolean;
+  viewAllLabel?: string;
   onViewAll?: () => void;
 }) {
   return (
@@ -164,7 +166,7 @@ export function SectionLabel({
         <Text style={styles.sectionTitle}>{children}</Text>
         {viewAll && (
           <Pressable onPress={onViewAll} hitSlop={8} style={({ pressed }) => pressed && { opacity: 0.6 }}>
-            <Text style={styles.viewAll}>View all</Text>
+            <Text style={styles.viewAll}>{viewAllLabel}</Text>
           </Pressable>
         )}
       </View>
