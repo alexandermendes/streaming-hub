@@ -49,6 +49,9 @@ export default function RootLayout() {
           tabBarStyle: {
             backgroundColor: colors.bg,
             borderTopColor: wa(0.06),
+            paddingBottom: 8,
+            paddingTop: 6,
+            height: 64,
           },
         }}
       >
