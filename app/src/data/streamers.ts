@@ -25,16 +25,17 @@ export type Platform = {
   fg: string;
   active: boolean;
   pricePerMonth: number; // base monthly price in £
+  cancelUrl: string; // provider's manage/cancel page (opened by "Cancel this subscription")
 };
 
 export const platforms: Platform[] = [
-  { id: "netflix",   name: "Netflix",      short: "N",      bg: "#000000", fg: "#E50914", active: true,  pricePerMonth: 17.99 },
-  { id: "disney",    name: "Disney+",      short: "Disney+",bg: "#0E2A6B", fg: "#ffffff", active: true,  pricePerMonth: 4.99  },
-  { id: "appletv",   name: "Apple TV+",    short: "tv+",    bg: "#000000", fg: "#ffffff", active: true,  pricePerMonth: 8.99  },
-  { id: "itvx",      name: "ITVX",         short: "ITVX",   bg: "#101820", fg: "#ffd400", active: true,  pricePerMonth: 5.99  },
-  { id: "paramount", name: "Paramount+",   short: "P+",     bg: "#0064FF", fg: "#ffffff", active: false, pricePerMonth: 6.99  },
-  { id: "now",       name: "NOW",          short: "NOW",    bg: "#001E3C", fg: "#00d1a6", active: false, pricePerMonth: 9.99  },
-  { id: "prime",     name: "Prime Video",  short: "prime",  bg: "#00A8E1", fg: "#ffffff", active: false, pricePerMonth: 8.99  },
+  { id: "netflix",   name: "Netflix",      short: "N",      bg: "#000000", fg: "#E50914", active: true,  pricePerMonth: 17.99, cancelUrl: "https://www.netflix.com/cancelplan" },
+  { id: "disney",    name: "Disney+",      short: "Disney+",bg: "#0E2A6B", fg: "#ffffff", active: true,  pricePerMonth: 4.99,  cancelUrl: "https://www.disneyplus.com/account/subscription" },
+  { id: "appletv",   name: "Apple TV+",    short: "tv+",    bg: "#000000", fg: "#ffffff", active: true,  pricePerMonth: 8.99,  cancelUrl: "https://apps.apple.com/account/subscriptions" },
+  { id: "itvx",      name: "ITVX",         short: "ITVX",   bg: "#101820", fg: "#ffd400", active: true,  pricePerMonth: 5.99,  cancelUrl: "https://www.itv.com/account" },
+  { id: "paramount", name: "Paramount+",   short: "P+",     bg: "#0064FF", fg: "#ffffff", active: false, pricePerMonth: 6.99,  cancelUrl: "https://www.paramountplus.com/account/" },
+  { id: "now",       name: "NOW",          short: "NOW",    bg: "#001E3C", fg: "#00d1a6", active: false, pricePerMonth: 9.99,  cancelUrl: "https://www.nowtv.com/account" },
+  { id: "prime",     name: "Prime Video",  short: "prime",  bg: "#00A8E1", fg: "#ffffff", active: false, pricePerMonth: 8.99,  cancelUrl: "https://www.amazon.co.uk/gp/video/settings" },
 ];
 
 export const platformById = (id: PlatformId) => platforms.find((p) => p.id === id)!;

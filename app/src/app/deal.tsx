@@ -2,6 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { useLocalSearchParams, useRouter } from "expo-router";
+import * as WebBrowser from "expo-web-browser";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -41,6 +42,9 @@ export default function DealScreen() {
   const p = platformById(deal.platform);
   const urgent = deal.endsInDays <= 7;
   const accent = urgent ? colors.urgent : colors.brand;
+
+  // Send the user to the provider's own manage/cancel page (in-app browser).
+  const openCancel = () => WebBrowser.openBrowserAsync(p.cancelUrl);
 
   // The design stores a relative countdown; turn it into a concrete end date.
   const end = new Date();
@@ -242,8 +246,12 @@ export default function DealScreen() {
             <Ionicons name="notifications-outline" size={16} color={colors.black} />
             <Text style={styles.primaryText}>Remind me before it ends</Text>
           </Pressable>
-          <Pressable style={({ pressed }) => [styles.ghostBtn, pressed && styles.pressed]}>
-            <Text style={styles.ghostText}>Cancel this subscription</Text>
+          <Pressable
+            onPress={openCancel}
+            style={({ pressed }) => [styles.ghostBtn, pressed && styles.pressed]}
+          >
+            <Ionicons name="open-outline" size={14} color={colors.urgent} />
+            <Text style={styles.ghostText}>Cancel on {p.name}</Text>
           </Pressable>
         </View>
       </ScrollView>
@@ -386,7 +394,13 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   primaryText: { color: colors.black, fontSize: 14, fontWeight: "700" },
-  ghostBtn: { height: 44, alignItems: "center", justifyContent: "center" },
+  ghostBtn: {
+    height: 44,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 6,
+  },
   ghostText: { color: colors.urgent, fontSize: 13, fontWeight: "600" },
 
   emptyState: { flex: 1, alignItems: "center", justifyContent: "center" },
