@@ -7,7 +7,7 @@ import * as WebBrowser from "expo-web-browser";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { PlatformLogo, Poster, SectionLabel } from "@/components/streamers";
+import { PlatformLogo, Poster, SectionLabel, StickyTopBar } from "@/components/streamers";
 import { activeDeals, platformById, upcoming, watchlist } from "@/data/streamers";
 import { colors, radius, serif, wa } from "@/theme";
 
@@ -28,7 +28,8 @@ export default function DealScreen() {
   if (!deal) {
     return (
       <SafeAreaView style={styles.safe} edges={["top"]}>
-        <View style={styles.topBar}>
+        <StickyTopBar topInset={8} barBottomSpacing={0} />
+        <View style={[styles.topBar, styles.topBarSpaced]}>
           <Pressable onPress={goBack} hitSlop={8} style={styles.backBtn}>
             <Ionicons name="chevron-back" size={20} color={colors.white} />
             <Text style={styles.backText}>Subscriptions</Text>
@@ -63,9 +64,11 @@ export default function DealScreen() {
 
   return (
     <SafeAreaView style={styles.safe} edges={["top"]}>
-      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false} stickyHeaderIndices={[0]}>
+        <StickyTopBar topInset={8} barBottomSpacing={0} />
+
         {/* Top bar */}
-        <View style={styles.topBar}>
+        <View style={[styles.topBar, styles.topBarSpaced]}>
           <Pressable onPress={goBack} hitSlop={8} style={styles.backBtn}>
             <Ionicons name="chevron-back" size={20} color={colors.white} />
             <Text style={styles.backText}>Subscriptions</Text>
@@ -274,15 +277,15 @@ function Toggle({ value, onToggle }: { value: boolean; onToggle: () => void }) {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.bg },
-  content: { paddingHorizontal: 24, paddingTop: 8, paddingBottom: 48 },
+  content: { paddingHorizontal: 24, paddingTop: 0, paddingBottom: 48 },
   pressed: { opacity: 0.6 },
 
   topBar: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 20,
   },
+  topBarSpaced: { marginTop: 12, marginBottom: 20 },
   backBtn: { flexDirection: "row", alignItems: "center", marginLeft: -4 },
   backText: { color: colors.white, fontSize: 15, fontWeight: "500" },
   edit: { color: colors.brand, fontSize: 15, fontWeight: "600" },

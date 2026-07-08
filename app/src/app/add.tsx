@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { PlatformLogo, RtTopBar } from "@/components/streamers";
+import { PlatformLogo, StickyTopBar } from "@/components/streamers";
 import { platformById, platforms, type PlatformId } from "@/data/streamers";
 import { colors, radius, wa } from "@/theme";
 
@@ -84,10 +84,13 @@ export default function AddSubscriptionScreen() {
 
   return (
     <SafeAreaView style={styles.safe} edges={["top"]}>
-      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-        <RtTopBar />
+      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false} stickyHeaderIndices={[0]}>
+        <StickyTopBar topInset={16} barBottomSpacing={0} />
 
-        <Text style={styles.h1}>Log a new subscription</Text>
+        <View style={styles.headingBlock}>
+          <Text style={styles.h1}>Log a new subscription</Text>
+          <Text style={styles.hSub}>Choose your plan details</Text>
+        </View>
 
         <View style={{ gap: 20 }}>
           {/* Platform selector */}
@@ -405,9 +408,11 @@ function Toggle({ value, onToggle }: { value: boolean; onToggle: () => void }) {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.bg },
-  content: { paddingHorizontal: 24, paddingTop: 16, paddingBottom: 48 },
+  content: { paddingHorizontal: 24, paddingTop: 0, paddingBottom: 48 },
 
-  h1: { color: colors.white, fontSize: 24, fontWeight: "700", letterSpacing: -0.5, marginBottom: 28 },
+  headingBlock: { marginTop: 12, marginBottom: 24 },
+  h1: { color: colors.white, fontSize: 22, fontWeight: "700", letterSpacing: -0.5, textAlign: "center", marginBottom: 4 },
+  hSub: { color: wa(0.4), fontSize: 12, textAlign: "center" },
 
   fieldLabel: { color: wa(0.5), fontSize: 12, fontWeight: "500", paddingHorizontal: 4, marginBottom: 8 },
 

@@ -13,7 +13,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { PlatformLogo, RtTopBar } from "@/components/streamers";
+import { PlatformLogo, StickyTopBar } from "@/components/streamers";
 import { platformById, upcoming, type Upcoming } from "@/data/streamers";
 import { colors, radius, wa } from "@/theme";
 
@@ -22,11 +22,11 @@ const SCRIM = ["rgba(0,0,0,0.06)", "rgba(0,0,0,0.4)", "rgba(0,0,0,0.88)"] as con
 export default function NewsScreen() {
   return (
     <SafeAreaView style={styles.safe} edges={["top"]}>
-      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-        <RtTopBar />
-        <View style={{ marginBottom: 24 }}>
-          <Text style={styles.eyebrow}>This month</Text>
-          <Text style={styles.h1}>Reasons to subscribe — upcoming highlights</Text>
+      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false} stickyHeaderIndices={[0]}>
+        <StickyTopBar topInset={16} barBottomSpacing={0} />
+        <View style={{ marginTop: 12, marginBottom: 24 }}>
+          <Text style={styles.h1}>Reasons to subscribe</Text>
+          <Text style={styles.eyebrow}>Upcoming highlights this month</Text>
         </View>
 
         {upcoming.map((up) => (
@@ -137,11 +137,11 @@ function UpcomingCard({ up }: { up: Upcoming }) {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.bg },
-  content: { paddingHorizontal: 24, paddingTop: 16, paddingBottom: 32 },
+  content: { paddingHorizontal: 24, paddingTop: 0, paddingBottom: 32 },
   pressed: { opacity: 0.6 },
 
-  eyebrow: { color: wa(0.4), fontSize: 11, fontWeight: "500", marginBottom: 4 },
-  h1: { color: colors.white, fontSize: 26, fontWeight: "700", letterSpacing: -0.5, lineHeight: 30 },
+  h1: { color: colors.white, fontSize: 22, fontWeight: "700", letterSpacing: -0.5, textAlign: "center", marginBottom: 4 },
+  eyebrow: { color: wa(0.4), fontSize: 12, textAlign: "center" },
 
   cardHead: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 12 },
   cardHeadLeft: { flexDirection: "row", alignItems: "center", gap: 8 },

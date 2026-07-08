@@ -3,7 +3,7 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { PostWatchSheet } from "@/components/post-watch-sheet";
-import { PlatformTile, Poster, RtTopBar, SectionLabel } from "@/components/streamers";
+import { PlatformTile, Poster, SectionLabel, StickyTopBar } from "@/components/streamers";
 import { activeDeals, platformById, platforms, watchlist, type PlatformId, type WatchTitle } from "@/data/streamers";
 import { colors, radius, wa } from "@/theme";
 
@@ -20,10 +20,10 @@ export default function WatchlistScreen() {
 
   return (
     <SafeAreaView style={styles.safe} edges={["top"]}>
-      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-        <RtTopBar />
+      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false} stickyHeaderIndices={[0]}>
+        <StickyTopBar topInset={16} barBottomSpacing={0} />
 
-        <View style={{ marginBottom: 24 }}>
+        <View style={{ marginTop: 12, marginBottom: 24 }}>
           <Text style={styles.title}>My Watchlist</Text>
           <Text style={styles.subtitle}>Filtered by platform</Text>
           <ScrollView
@@ -129,7 +129,7 @@ function WatchRow({ t, onMarkWatched }: { t: WatchTitle; onMarkWatched: () => vo
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.bg },
-  content: { paddingHorizontal: 24, paddingTop: 16, paddingBottom: 32 },
+  content: { paddingHorizontal: 24, paddingTop: 0, paddingBottom: 32 },
   pressed: { opacity: 0.6 },
 
   title: { color: colors.white, fontSize: 22, fontWeight: "700", letterSpacing: -0.5, textAlign: "center", marginBottom: 4 },
