@@ -85,10 +85,10 @@ export function PostWatchSheet({
             onPress={onClose}
             style={({ pressed }) => [styles.primaryBtn, pressed && styles.pressed]}
           >
-            <Text style={styles.primaryBtnText}>See all on Apple TV+</Text>
+            <Text style={styles.primaryBtnText}>Mark as Watched</Text>
           </Pressable>
           <Pressable onPress={onClose} style={({ pressed }) => pressed && styles.pressed}>
-            <Text style={styles.dismiss}>Dismiss</Text>
+            <Text style={styles.dismiss}>See all on Apple TV+</Text>
           </Pressable>
         </ScrollView>
       </View>
