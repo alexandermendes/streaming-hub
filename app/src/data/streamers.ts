@@ -71,10 +71,16 @@ export type Offer = {
 };
 
 export const offers: Offer[] = [
-  { id: "para-1", platform: "paramount", headline: "3 months for £1", detail: "Then £6.99/mo. New & returning members.", badge: "Hot deal", badgeTone: "hot", expires: "Ends Sun" },
-  { id: "disney-1", platform: "disney", headline: "Annual plan · save 16%", detail: "£79.90 for 12 months on Standard with Ads.", badge: "Editor's pick", badgeTone: "new", expires: "Limited time" },
-  { id: "now-1", platform: "now", headline: "Entertainment £6.99/mo", detail: "Was £9.99. First 3 months for new members.", badge: "Ending soon", badgeTone: "ending", expires: "3 days left" },
-  { id: "prime-1", platform: "prime", headline: "30-day free trial", detail: "Then £8.99/mo. Includes Prime delivery.", badge: "Free trial", badgeTone: "new", expires: "Always on" },
+  { id: "para-1",    platform: "paramount", headline: "3 months for £1",              detail: "Then £6.99/mo. New & returning members.",              badge: "Hot deal",      badgeTone: "hot",    expires: "Ends Sun" },
+  { id: "disney-1",  platform: "disney",    headline: "Annual plan · save 16%",        detail: "£79.90 for 12 months on Standard with Ads.",           badge: "Editor's pick", badgeTone: "new",    expires: "Limited time" },
+  { id: "now-1",     platform: "now",       headline: "Entertainment £6.99/mo",        detail: "Was £9.99. First 3 months for new members.",           badge: "Ending soon",   badgeTone: "ending", expires: "3 days left" },
+  { id: "prime-1",   platform: "prime",     headline: "30-day free trial",             detail: "Then £8.99/mo. Includes Prime delivery.",              badge: "Free trial",    badgeTone: "new",    expires: "Always on" },
+  { id: "netflix-1", platform: "netflix",   headline: "Standard with Ads · £4.99/mo", detail: "Reduced from £6.99. Existing and new members.",        badge: "Hot deal",      badgeTone: "hot",    expires: "Ends 31 Jul" },
+  { id: "itvx-1",    platform: "itvx",      headline: "ITVX Premium · 2 months free", detail: "Then £3.99/mo. Cancel anytime.",                       badge: "Free trial",    badgeTone: "new",    expires: "Limited time" },
+  { id: "appletv-1", platform: "appletv",   headline: "Apple TV+ free for 3 months",  detail: "With any Apple device purchase. New subscribers only.", badge: "New offer",     badgeTone: "new",    expires: "Ongoing" },
+  { id: "now-2",     platform: "now",       headline: "Cinema + Entertainment bundle", detail: "£11.99/mo. Save £4 vs buying separately.",            badge: "Hot deal",      badgeTone: "hot",    expires: "Ends Fri" },
+  { id: "para-2",    platform: "paramount", headline: "Student discount · 25% off",   detail: "£5.24/mo with valid student email.",                   badge: "Editor's pick", badgeTone: "new",    expires: "Always on" },
+  { id: "prime-2",   platform: "prime",     headline: "Prime Student · 6 months free",detail: "Then £4.49/mo. Includes Prime delivery & music.",      badge: "Hot deal",      badgeTone: "hot",    expires: "Always on" },
 ];
 
 /* ── Screen 3 (My Watchlist) ── */
