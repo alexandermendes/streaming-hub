@@ -40,6 +40,8 @@ export default function HubScreen() {
   const diff = parseFloat((totalMonthly - lastMonthTotal).toFixed(2));
   const diffUp = diff >= 0;
   const diffLabel = `£${Math.abs(diff) % 1 === 0 ? Math.abs(diff).toFixed(0) : Math.abs(diff).toFixed(2)}`;
+  const [soonest, ...rest] = [...activeDeals].sort((a, b) => a.endsInDays - b.endsInDays);
+  const sortedDeals = soonest ? [soonest, ...rest.sort((a, b) => b.endsInDays - a.endsInDays)] : [];
   // ─────────────────────────────────────────────────────────────────────────
 
   const goToAdd = (platform?: PlatformId) =>
@@ -88,11 +90,11 @@ export default function HubScreen() {
 
         {/* Active deals */}
         <View style={styles.section}>
-          <SectionLabel sub="3 running this month">
+          <SectionLabel sub="4 running this month">
             Active deals
           </SectionLabel>
           <View style={{ gap: 12 }}>
-            {[...activeDeals].sort((a, b) => a.endsInDays - b.endsInDays).map((d) => {
+            {sortedDeals.map((d) => {
               const p = platformById(d.platform);
               const urgent = d.endsInDays <= 7;
               return (

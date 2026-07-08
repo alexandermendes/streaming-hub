@@ -50,6 +50,7 @@ export type Deal = {
 };
 
 export const activeDeals: Deal[] = [
+  { platform: "netflix",  label: "Standard with Ads", price: "£4.99", priceNum: 4.99, progress: 40, started: "Started 01 Jun", endsInDays: 30 },
   { platform: "disney",  label: "Annual promo rate", price: "£1.99", priceNum: 1.99, progress: 65, started: "Started 12 Jan", endsInDays: 42 },
   { platform: "appletv", label: "Free trial",        price: "£0.00", priceNum: 0.00, progress: 80, started: "Started 25 Apr", endsInDays: 5  },
   { platform: "itvx",    label: "Premium • Monthly", price: "£5.99", priceNum: 5.99, progress: 25, started: "Started 02 May", endsInDays: 22 },
