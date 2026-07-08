@@ -1,4 +1,4 @@
-# RT Streamers Hub
+# Binge Buddy
 
 A concept app for managing every streaming subscription you juggle — deals,
 expiries, and a Radio Times watchlist sorted by what's actually streaming where.

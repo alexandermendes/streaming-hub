@@ -36,7 +36,7 @@ function Index() {
           Radio Times · Mobile App
         </p>
         <h1 className="font-display font-black text-5xl sm:text-6xl leading-[0.95] tracking-tight mb-5">
-          RT Streamers Hub.
+          Binge Buddy.
         </h1>
         <p className="text-sm sm:text-base text-white/60 max-w-md mx-auto leading-relaxed">
           One home for every subscription you juggle — deals tracked, expiries
