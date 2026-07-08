@@ -5,7 +5,7 @@ import type { ReactNode } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import type { Platform } from "@/data/streamers";
-import { colors, radius, serif, wa } from "@/theme";
+import { colors, radius, wa } from "@/theme";
 
 /* ─────────── Poster (gradient fallback + TMDB image + scrim) ─────────── */
 const POSTER_SCRIM = ["transparent", "rgba(0,0,0,0.7)"] as const;
@@ -129,7 +129,11 @@ export function RtTopBar() {
   return (
     <View style={styles.topBar}>
       <View style={{ width: 36 }} />
-      <Text style={styles.wordmark}>RadioTimes</Text>
+      <Image
+        source={require("../../assets/images/logo.webp")}
+        style={styles.wordmarkLogo}
+        contentFit="contain"
+      />
       <Ionicons name="person-circle-outline" size={36} color={wa(0.7)} />
     </View>
   );
@@ -226,7 +230,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 24,
   },
-  wordmark: { color: colors.white, fontFamily: serif.bold, fontSize: 26, letterSpacing: 0 },
+  wordmarkLogo: { width: 168, height: 30 },
   avatar: {
     width: 36,
     height: 36,
