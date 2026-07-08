@@ -1,3 +1,4 @@
+import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -18,6 +19,25 @@ export default function WatchlistScreen() {
   const [watched, setWatched] = useState<{ id: string; title: string; subtitle: string; platform: PlatformId } | null>(null);
   const [watchedIds, setWatchedIds] = useState<Set<string>>(new Set());
   const [showAllNow, setShowAllNow] = useState(false);
+  const [activeTab, setActiveTab] = useState<'watchlist' | 'watched'>('watchlist');
+
+  const handleMarkWatched = (t: WatchTitle) => {
+    setWatched({ title: t.title, subtitle: t.statusLabel });
+  };
+
+  const handleSheetClose = () => {
+    if (watched) {
+      const item = watchlist.find((w) => w.title === watched.title);
+      if (item) {
+        setWatchedIds((prev) => new Set(prev).add(item.id));
+      }
+    }
+    setWatched(null);
+  };
+
+  const watchedItems = watchlist.filter(
+    (w) => watchedIds.has(w.id) && w.platform === selected,
+  );
 
   return (
     <SafeAreaView style={styles.safe} edges={["top"]}>
@@ -43,6 +63,27 @@ export default function WatchlistScreen() {
           </ScrollView>
         </View>
 
+        {/* Tab switcher */}
+        <View style={styles.tabRow}>
+          <Pressable
+            onPress={() => setActiveTab('watchlist')}
+            style={[styles.tab, activeTab === 'watchlist' && styles.tabActive]}
+          >
+            <Text style={[styles.tabText, activeTab === 'watchlist' && styles.tabTextActive]}>
+              Watchlist
+            </Text>
+          </Pressable>
+          <Pressable
+            onPress={() => setActiveTab('watched')}
+            style={[styles.tab, activeTab === 'watched' && styles.tabActive]}
+          >
+            <Text style={[styles.tabText, activeTab === 'watched' && styles.tabTextActive]}>
+              Watched{watchedIds.size > 0 ? ` (${watchedIds.size})` : ''}
+            </Text>
+          </Pressable>
+        </View>
+
+        {activeTab === 'watchlist' && (
         <View style={{ gap: 32 }}>
           {SECTIONS.map((s) => {
             const allItems = watchlist.filter((w) => w.status === s.key && w.platform === selected && !watchedIds.has(w.id));
@@ -89,6 +130,44 @@ export default function WatchlistScreen() {
             );
           })()}
         </View>
+        )}
+
+        {activeTab === 'watched' && (
+          <View style={{ gap: 20 }}>
+            {watchedItems.length === 0 ? (
+              <Text style={styles.emptyText}>
+                No watched shows yet. Mark a show as watched to see it here.
+              </Text>
+            ) : (
+              watchedItems.map((t) => (
+                <View key={t.id} style={styles.row}>
+                  <Poster
+                    title={t.title}
+                    image={t.image}
+                    gradient={t.gradient}
+                  />
+                  <View style={styles.rowBody}>
+                    <Text style={styles.rowTitle}>{t.title}</Text>
+                    <View style={styles.watchedBadge}>
+                      <Ionicons name="checkmark-circle" size={14} color={colors.brand} />
+                      <Text style={styles.watchedText}>Watched</Text>
+                    </View>
+                    <Pressable
+                      onPress={() => setWatchedIds((prev) => {
+                        const next = new Set(prev);
+                        next.delete(t.id);
+                        return next;
+                      })}
+                      style={({ pressed }) => [styles.moveBackBtn, pressed && styles.pressed]}
+                    >
+                      <Text style={styles.moveBackText}>Move to watchlist</Text>
+                    </Pressable>
+                  </View>
+                </View>
+              ))
+            )}
+          </View>
+        )}
       </ScrollView>
 
       <PostWatchSheet
@@ -206,4 +285,61 @@ const styles = StyleSheet.create({
   },
   remindText: { color: colors.brand, fontSize: 11, fontWeight: "600" },
   viewOn: { color: wa(0.5), fontSize: 11, fontWeight: "600", textDecorationLine: "underline" },
+
+  tabRow: {
+    flexDirection: "row",
+    gap: 0,
+    marginBottom: 24,
+    borderRadius: radius.full,
+    backgroundColor: wa(0.05),
+    padding: 4,
+  },
+  tab: {
+    flex: 1,
+    paddingVertical: 8,
+    alignItems: "center",
+    borderRadius: radius.full,
+  },
+  tabActive: {
+    backgroundColor: colors.card,
+  },
+  tabText: {
+    color: wa(0.4),
+    fontSize: 12,
+    fontWeight: "600",
+  },
+  tabTextActive: {
+    color: colors.white,
+  },
+  watchedBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    marginTop: 4,
+  },
+  watchedText: {
+    color: colors.brand,
+    fontSize: 11,
+    fontWeight: "600",
+  },
+  moveBackBtn: {
+    alignSelf: "flex-start",
+    borderWidth: 1,
+    borderColor: wa(0.2),
+    borderRadius: radius.full,
+    paddingHorizontal: 16,
+    paddingVertical: 6,
+    marginTop: 8,
+  },
+  moveBackText: {
+    color: colors.white,
+    fontSize: 11,
+    fontWeight: "600",
+  },
+  emptyText: {
+    color: wa(0.4),
+    fontSize: 13,
+    textAlign: "center",
+    marginTop: 32,
+  },
 });
