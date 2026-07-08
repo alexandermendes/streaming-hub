@@ -65,7 +65,7 @@ export default function RootLayout() {
         />
         <Tabs.Screen
           name="news"
-          options={{ title: "News", tabBarIcon: tabIcon("newspaper-outline", "newspaper") }}
+          options={{ title: "Highlights", tabBarIcon: tabIcon("newspaper-outline", "newspaper") }}
         />
         <Tabs.Screen
           name="add"
