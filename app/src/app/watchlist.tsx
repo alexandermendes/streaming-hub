@@ -16,7 +16,7 @@ const SECTIONS = [
 export default function WatchlistScreen() {
   const dealPlatforms = platforms.filter((p) => activeDeals.some((d) => d.platform === p.id));
   const [selected, setSelected] = useState<PlatformId>(dealPlatforms[0]?.id ?? "netflix");
-  const [watched, setWatched] = useState<{ title: string; subtitle: string } | null>(null);
+  const [watched, setWatched] = useState<{ id: string; title: string; subtitle: string; platform: PlatformId } | null>(null);
   const [watchedIds, setWatchedIds] = useState<Set<string>>(new Set());
   const [showAllNow, setShowAllNow] = useState(false);
   const [activeTab, setActiveTab] = useState<'watchlist' | 'watched'>('watchlist');
@@ -86,9 +86,7 @@ export default function WatchlistScreen() {
         {activeTab === 'watchlist' && (
         <View style={{ gap: 32 }}>
           {SECTIONS.map((s) => {
-            const allItems = watchlist.filter(
-              (w) => w.status === s.key && w.platform === selected && !watchedIds.has(w.id),
-            );
+            const allItems = watchlist.filter((w) => w.status === s.key && w.platform === selected && !watchedIds.has(w.id));
             const isNow = s.key === "now";
             const items = isNow && !showAllNow ? allItems.slice(0, 3) : allItems;
             return (
@@ -106,13 +104,31 @@ export default function WatchlistScreen() {
                     <WatchRow
                       key={t.id}
                       t={t}
-                      onMarkWatched={() => handleMarkWatched(t)}
+                      onMarkWatched={() => setWatched({ id: t.id, title: t.title, subtitle: t.statusLabel, platform: t.platform })}
                     />
                   ))}
                 </View>
               </View>
             );
           })}
+
+          {/* Watched section */}
+          {(() => {
+            const items = watchlist.filter((w) => w.platform === selected && watchedIds.has(w.id));
+            if (items.length === 0) return null;
+            return (
+              <View>
+                <SectionLabel sub={`${items.length} ${items.length === 1 ? "title" : "titles"}`}>
+                  Watched
+                </SectionLabel>
+                <View style={{ gap: 20 }}>
+                  {items.map((t) => (
+                    <WatchRow key={t.id} t={t} isWatched onMarkWatched={() => setWatchedIds((prev) => { const next = new Set(prev); next.delete(t.id); return next; })} />
+                  ))}
+                </View>
+              </View>
+            );
+          })()}
         </View>
         )}
 
@@ -158,14 +174,18 @@ export default function WatchlistScreen() {
         visible={watched !== null}
         title={watched?.title ?? ""}
         subtitle={watched?.subtitle}
-        onClose={handleSheetClose}
+        platform={watched?.platform}
+        onClose={() => {
+          if (watched) setWatchedIds((prev) => new Set([...prev, watched.id]));
+          setWatched(null);
+        }}
       />
     </SafeAreaView>
   );
 }
 
-function WatchRow({ t, onMarkWatched }: { t: WatchTitle; onMarkWatched: () => void }) {
-  const muted = t.status !== "now";
+function WatchRow({ t, onMarkWatched, isWatched = false }: { t: WatchTitle; onMarkWatched: () => void; isWatched?: boolean }) {
+  const muted = t.status !== "now" && !isWatched;
   return (
     <View style={[styles.row, muted && { opacity: 0.6 }]}>
       <Poster
@@ -186,7 +206,15 @@ function WatchRow({ t, onMarkWatched }: { t: WatchTitle; onMarkWatched: () => vo
         <Text style={styles.rowTitle}>{t.title}</Text>
         <Text style={styles.rowStatus}>{t.statusLabel}</Text>
 
-        {t.status === "now" && (
+        {isWatched && (
+          <Pressable
+            onPress={onMarkWatched}
+            style={({ pressed }) => [styles.watchedBadge, pressed && styles.pressed]}
+          >
+            <Text style={styles.watchedBadgeText}>✓ Watched · Watch again</Text>
+          </Pressable>
+        )}
+        {!isWatched && t.status === "now" && (
           <Pressable
             onPress={onMarkWatched}
             style={({ pressed }) => [styles.markBtn, pressed && styles.pressed]}
@@ -229,6 +257,15 @@ const styles = StyleSheet.create({
   rowTitle: { color: colors.white, fontSize: 17, fontWeight: "700", letterSpacing: -0.3, marginBottom: 4 },
   rowStatus: { color: wa(0.5), fontSize: 12, marginBottom: 12 },
 
+  watchedBadge: {
+    alignSelf: "flex-start",
+    backgroundColor: colors.brand,
+    borderRadius: radius.full,
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    marginTop: 4,
+  },
+  watchedBadgeText: { color: colors.black, fontSize: 11, fontWeight: "700" },
   markBtn: {
     alignSelf: "flex-start",
     borderWidth: 1,
