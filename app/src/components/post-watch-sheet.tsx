@@ -1,10 +1,30 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
-import { Modal, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Linking, Modal, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
 import { Poster } from "@/components/streamers";
-import { recommendations } from "@/data/streamers";
+import { recommendations, type PlatformId } from "@/data/streamers";
 import { colors, radius, serif, wa } from "@/theme";
+
+const PLATFORM_URL: Record<PlatformId, string> = {
+  netflix:   "https://www.netflix.com",
+  disney:    "https://www.disneyplus.com",
+  appletv:   "https://tv.apple.com",
+  itvx:      "https://www.itv.com/itvx",
+  paramount: "https://www.paramountplus.com/gb/",
+  now:       "https://www.nowtv.com",
+  prime:     "https://www.amazon.co.uk/prime-video",
+};
+
+const PLATFORM_NAME: Record<PlatformId, string> = {
+  netflix:   "Netflix",
+  disney:    "Disney+",
+  appletv:   "Apple TV+",
+  itvx:      "ITVX",
+  paramount: "Paramount+",
+  now:       "NOW",
+  prime:     "Prime Video",
+};
 
 const RATING_LABEL = ["", "Not for me", "It was OK", "Good", "Loved it", "Loved it"];
 
@@ -13,11 +33,13 @@ export function PostWatchSheet({
   onClose,
   title,
   subtitle = "Season 3 · 6 episodes",
+  platform = "appletv",
 }: {
   visible: boolean;
   onClose: () => void;
   title: string;
   subtitle?: string;
+  platform?: PlatformId;
 }) {
   const [rating, setRating] = useState(4);
 
@@ -71,7 +93,7 @@ export function PostWatchSheet({
           </View>
 
           {/* Watch next */}
-          <Text style={styles.watchNext}>Watch next on Apple TV+</Text>
+          <Text style={styles.watchNext}>Watch next on {PLATFORM_NAME[platform]}</Text>
           <View style={styles.recRow}>
             {recommendations.map((r) => (
               <View key={r.id} style={styles.recItem}>
@@ -82,10 +104,10 @@ export function PostWatchSheet({
           </View>
 
           <Pressable
-            onPress={onClose}
+            onPress={() => Linking.openURL(PLATFORM_URL[platform])}
             style={({ pressed }) => [styles.primaryBtn, pressed && styles.pressed]}
           >
-            <Text style={styles.primaryBtnText}>See all on Apple TV+</Text>
+            <Text style={styles.primaryBtnText}>See all on {PLATFORM_NAME[platform]}</Text>
           </Pressable>
           <Pressable onPress={onClose} style={({ pressed }) => pressed && styles.pressed}>
             <Text style={styles.dismiss}>Dismiss</Text>
@@ -114,7 +136,7 @@ const styles = StyleSheet.create({
   handle: { width: 40, height: 4, borderRadius: 2, backgroundColor: wa(0.15), alignSelf: "center", marginBottom: 28 },
   pressed: { opacity: 0.6 },
 
-  finished: { color: colors.brand, fontSize: 12, fontWeight: "600", textAlign: "center", marginBottom: 4 },
+  finished: { color: colors.brand, fontSize: 18, fontWeight: "700", textAlign: "center", marginBottom: 4 },
   title: { color: colors.white, fontFamily: serif.semibold, fontSize: 30, textAlign: "center", marginBottom: 4 },
   subtitle: { color: wa(0.5), fontSize: 12, textAlign: "center", marginBottom: 28 },
 
