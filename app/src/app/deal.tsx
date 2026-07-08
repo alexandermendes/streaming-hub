@@ -8,7 +8,8 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { PlatformLogo, Poster, SectionLabel, StickyTopBar } from "@/components/streamers";
-import { activeDeals, platformById, upcoming, watchlist } from "@/data/streamers";
+import { useActiveDeals } from "@/data/subscriptions";
+import { platformById, upcoming, watchlist } from "@/data/streamers";
 import { colors, radius, serif, wa } from "@/theme";
 
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -21,6 +22,7 @@ export default function DealScreen() {
   const router = useRouter();
   const { platform } = useLocalSearchParams<{ platform?: string }>();
   const [notify, setNotify] = useState(false);
+  const activeDeals = useActiveDeals();
   const deal = activeDeals.find((d) => d.platform === platform);
 
   const goBack = () => (router.canGoBack() ? router.back() : router.navigate("/"));

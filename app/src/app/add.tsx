@@ -5,7 +5,8 @@ import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { PlatformLogo, StickyTopBar } from "@/components/streamers";
-import { platformById, platforms, type PlatformId } from "@/data/streamers";
+import { saveSubscription } from "@/data/subscriptions";
+import { platformById, platforms, type Deal, type PlatformId } from "@/data/streamers";
 import { colors, radius, wa } from "@/theme";
 
 const isPlatformId = (v: unknown): v is PlatformId => platforms.some((p) => p.id === v);
@@ -19,7 +20,9 @@ const MONTHS = [
   "January", "February", "March", "April", "May", "June",
   "July", "August", "September", "October", "November", "December",
 ];
+const SHORT_MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const WEEKDAYS = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
+const DAY_MS = 24 * 60 * 60 * 1000;
 
 const pad = (n: number) => String(n).padStart(2, "0");
 const formatDate = (d: Date) => `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()}`;
@@ -30,6 +33,25 @@ const maskPriceInput = (input: string) => {
   if (!digits) return "";
   const value = Number(digits) / 100;
   return value.toFixed(2);
+};
+const parsePrice = (value: string) => {
+  const parsed = Number.parseFloat(value);
+  return Number.isFinite(parsed) ? parsed : 0;
+};
+const formatMoney = (value: number) => `£${value.toFixed(2)}`;
+const formatStarted = (d: Date) => `Started ${pad(d.getDate())} ${SHORT_MONTHS[d.getMonth()]}`;
+const startOfDay = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+const addDays = (d: Date, days: number) => {
+  const next = new Date(d);
+  next.setDate(next.getDate() + days);
+  return next;
+};
+const daysBetween = (from: Date, to: Date) =>
+  Math.max(0, Math.ceil((startOfDay(to).getTime() - startOfDay(from).getTime()) / DAY_MS));
+const progressBetween = (start: Date, end: Date) => {
+  const totalDays = Math.max(1, daysBetween(start, end));
+  const elapsedDays = Math.min(totalDays, daysBetween(start, new Date()));
+  return Math.round((elapsedDays / totalDays) * 100);
 };
 
 const defaultStartDate = new Date();
@@ -74,6 +96,41 @@ export default function AddSubscriptionScreen() {
   }, [notify, picker]);
 
   const selected = platformById(selectedId);
+
+  const buildSubscriptionDeal = (): Deal => {
+    let label: string;
+    let priceNum: number;
+    let endsAt = endDate;
+
+    if (dealType === "trial") {
+      label = "Free trial";
+      priceNum = 0;
+    } else if (dealType === "promo") {
+      label = "Promo rate";
+      priceNum = parsePrice(promoCost);
+    } else {
+      const isAnnual = fullBillingCycle === "annual";
+      const cycleDays = isAnnual ? 365 : 30;
+      label = isAnnual ? "Annual plan" : "Monthly plan";
+      priceNum = isAnnual ? parsePrice(annualCost) / 12 : parsePrice(monthlyCost);
+      endsAt = notify ? cancelReminderDate : addDays(startDate, cycleDays);
+    }
+
+    return {
+      platform: selectedId,
+      label,
+      price: formatMoney(priceNum),
+      priceNum,
+      progress: progressBetween(startDate, endsAt),
+      started: formatStarted(startDate),
+      endsInDays: daysBetween(new Date(), endsAt),
+    };
+  };
+
+  const handleSave = () => {
+    saveSubscription(buildSubscriptionDeal());
+    router.navigate("/");
+  };
 
   const pickDate = (d: Date) => {
     if (picker === "start") setStartDate(d);
@@ -250,7 +307,7 @@ export default function AddSubscriptionScreen() {
       <View style={styles.saveBar}>
         <Pressable
           style={({ pressed }) => [styles.saveBtn, pressed && { opacity: 0.8 }]}
-          onPress={() => router.navigate("/")}
+          onPress={handleSave}
         >
           <Text style={styles.saveBtnText}>Save subscription</Text>
         </Pressable>
