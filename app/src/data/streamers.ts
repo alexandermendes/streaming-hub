@@ -99,16 +99,38 @@ export type WatchTitle = {
 };
 
 export const watchlist: WatchTitle[] = [
-  { id: "bear", title: "The Bear", genre: "Drama", rt: "4.8", status: "now", statusLabel: "Season 3 · Available now", platform: "netflix", gradient: ["#3a0d0d", "#7a1a1a", "#c44a2a"], image: "https://media.themoviedb.org/t/p/w500/eKfVzzEazSIjJMrw9ADa2x8ksLz.jpg" },
-  { id: "succ", title: "Succession", genre: "Drama", rt: "4.9", status: "now", statusLabel: "Complete series", platform: "now", gradient: ["#0a0a0a", "#1f1f1f", "#4a4a4a"], image: "https://media.themoviedb.org/t/p/w500/z0XiwdrCQ9yVIr4O0pxzaAYRxdW.jpg" },
-  { id: "mirror", title: "Black Mirror", genre: "Sci-Fi", rt: "4.2", status: "soon", statusLabel: "Drops 24 October", platform: "netflix", gradient: ["#050505", "#1a1a3a", "#3a2a6a"], image: "https://media.themoviedb.org/t/p/w500/seN6rRfN0I6n8iDXjlSMk1QjNcq.jpg" },
-  { id: "lotus", title: "The White Lotus", genre: "Drama", rt: "4.5", status: "elsewhere", statusLabel: "Only on NOW / Sky", platform: "now", gradient: ["#4a3a1a", "#a07a3a", "#e0c478"], image: "https://media.themoviedb.org/t/p/w500/gbSaK9v1CbcYH1ISgbM7XObD2dW.jpg" },
-  { id: "andor-wl", title: "Andor", genre: "Sci-Fi", rt: "4.7", status: "now", statusLabel: "Both seasons streaming", platform: "disney", gradient: ["#1a1a1a", "#3a3a4a", "#7a7a8a"], image: "https://media.themoviedb.org/t/p/w500/khZqmwHQicTYoS7Flreb9EddFZC.jpg" },
-  { id: "agatha-wl", title: "Agatha All Along", genre: "Fantasy", rt: "4.1", status: "now", statusLabel: "Season 1 · Available now", platform: "disney", gradient: ["#1a0a1a", "#4a1a4a", "#8a3a8a"], image: "https://media.themoviedb.org/t/p/w500/mGsxKwXUjojitRv2E9qMTbxbBRd.jpg" },
-  { id: "slow-wl", title: "Slow Horses", genre: "Thriller", rt: "4.6", status: "now", statusLabel: "Four seasons streaming", platform: "appletv", gradient: ["#1a1a1a", "#3a3a3a", "#7a7a7a"], image: "https://media.themoviedb.org/t/p/w500/5RuZZIouptatjV96BdPmKmRsnGg.jpg" },
-  { id: "sev-wl", title: "Severance", genre: "Sci-Fi", rt: "4.8", status: "now", statusLabel: "Season 2 · Available now", platform: "appletv", gradient: ["#0a1a2a", "#1a3a5a", "#4a7aaa"], image: "https://media.themoviedb.org/t/p/w500/pPHpeI2X1qEd1CS1SeyrdhZ4qnT.jpg" },
-  { id: "bates-wl", title: "Mr Bates vs The Post Office", genre: "Drama", rt: "4.7", status: "now", statusLabel: "Limited series · Available now", platform: "itvx", gradient: ["#0a1420", "#1a2b3a", "#3a5a6a"] },
-  { id: "rivals-wl", title: "Rivals", genre: "Drama", rt: "4.4", status: "soon", statusLabel: "New season this autumn", platform: "itvx", gradient: ["#2a0a1a", "#5a1a3a", "#a03a5a"] },
+  // ── Netflix ──────────────────────────────────────────────────────────────
+  { id: "bear",        title: "The Bear",              genre: "Drama",    rt: "4.8", status: "now",  statusLabel: "Season 3 · Available now",        platform: "netflix", gradient: ["#3a0d0d", "#7a1a1a", "#c44a2a"], image: "https://media.themoviedb.org/t/p/w500/eKfVzzEazSIjJMrw9ADa2x8ksLz.jpg" },
+  { id: "stranger",    title: "Stranger Things",       genre: "Sci-Fi",   rt: "4.7", status: "now",  statusLabel: "Seasons 1–4 · Available now",     platform: "netflix", gradient: ["#050515", "#1a1a3a", "#3a2a5a"], image: "https://media.themoviedb.org/t/p/w500/49WJfeN0moxb9IPfGn8AIqMGskD.jpg" },
+  { id: "bridgerton",  title: "Bridgerton",            genre: "Drama",    rt: "4.2", status: "now",  statusLabel: "Season 3 · Available now",        platform: "netflix", gradient: ["#2a1a2a", "#5a3a4a", "#a07080"], image: "https://media.themoviedb.org/t/p/w500/luoKpgVwi1E5nQsi7W0UuKHu2Rq.jpg" },
+  { id: "squidnow",    title: "Squid Game",            genre: "Thriller", rt: "4.6", status: "now",  statusLabel: "Seasons 1 & 2 · Available now",   platform: "netflix", gradient: ["#0a1a0a", "#1a3a1a", "#2a6a2a"], image: "https://media.themoviedb.org/t/p/w500/dDlEmu3EZ0XkCMlMrBTRTAkDTLu.jpg" },
+  { id: "mirror",      title: "Black Mirror",          genre: "Sci-Fi",   rt: "4.2", status: "soon", statusLabel: "Drops 24 October",                platform: "netflix", gradient: ["#050505", "#1a1a3a", "#3a2a6a"], image: "https://media.themoviedb.org/t/p/w500/seN6rRfN0I6n8iDXjlSMk1QjNcq.jpg" },
+  { id: "wednesday",   title: "Wednesday",             genre: "Comedy",   rt: "4.3", status: "soon", statusLabel: "Season 3 · Coming 2026",          platform: "netflix", gradient: ["#0a0a0a", "#1a0a1a", "#2a1a2a"], image: "https://media.themoviedb.org/t/p/w500/jeGtaMwGxPmQN5xM4ClnwPQcNQz.jpg" },
+  { id: "squid3",      title: "Squid Game",            genre: "Thriller", rt: "4.6", status: "soon", statusLabel: "Season 3 · Coming this year",     platform: "netflix", gradient: ["#0a1a0a", "#1a3a1a", "#2a5a2a"] },
+
+  // ── Disney+ ──────────────────────────────────────────────────────────────
+  { id: "andor-wl",    title: "Andor",                 genre: "Sci-Fi",   rt: "4.7", status: "now",  statusLabel: "Both seasons streaming",          platform: "disney",  gradient: ["#1a1a1a", "#3a3a4a", "#7a7a8a"], image: "https://media.themoviedb.org/t/p/w500/khZqmwHQicTYoS7Flreb9EddFZC.jpg" },
+  { id: "agatha-wl",   title: "Agatha All Along",      genre: "Fantasy",  rt: "4.1", status: "now",  statusLabel: "Season 1 · Available now",        platform: "disney",  gradient: ["#1a0a1a", "#4a1a4a", "#8a3a8a"], image: "https://media.themoviedb.org/t/p/w500/mGsxKwXUjojitRv2E9qMTbxbBRd.jpg" },
+  { id: "mandalorian", title: "The Mandalorian",       genre: "Sci-Fi",   rt: "4.6", status: "now",  statusLabel: "Seasons 1–3 · Available now",     platform: "disney",  gradient: ["#1a1410", "#3a2a1a", "#6a5a3a"], image: "https://media.themoviedb.org/t/p/w500/sWgBv7LV2reoncyqRoLrYsxkELU.jpg" },
+  { id: "xmen97",      title: "X-Men '97",             genre: "Animation",rt: "4.8", status: "now",  statusLabel: "Season 1 · Available now",        platform: "disney",  gradient: ["#1a0a0a", "#3a1a1a", "#6a3a1a"], image: "https://media.themoviedb.org/t/p/w500/dDBBQnKFxAzL2UxXH1FyYSmjJUs.jpg" },
+  { id: "daredevil2",  title: "Daredevil: Born Again", genre: "Action",   rt: "4.5", status: "soon", statusLabel: "Season 2 · Coming 2026",          platform: "disney",  gradient: ["#1a0a0a", "#3a0a0a", "#6a1a1a"] },
+  { id: "skeleton2",   title: "Skeleton Crew",         genre: "Sci-Fi",   rt: "4.2", status: "soon", statusLabel: "Season 2 · Confirmed",            platform: "disney",  gradient: ["#0a0a1a", "#1a1a3a", "#2a2a5a"] },
+
+  // ── Apple TV+ ────────────────────────────────────────────────────────────
+  { id: "slow-wl",     title: "Slow Horses",           genre: "Thriller", rt: "4.6", status: "now",  statusLabel: "Four seasons streaming",          platform: "appletv", gradient: ["#1a1a1a", "#3a3a3a", "#7a7a7a"], image: "https://media.themoviedb.org/t/p/w500/5RuZZIouptatjV96BdPmKmRsnGg.jpg" },
+  { id: "sev-wl",      title: "Severance",             genre: "Sci-Fi",   rt: "4.8", status: "now",  statusLabel: "Season 2 · Available now",        platform: "appletv", gradient: ["#0a1a2a", "#1a3a5a", "#4a7aaa"], image: "https://media.themoviedb.org/t/p/w500/pPHpeI2X1qEd1CS1SeyrdhZ4qnT.jpg" },
+  { id: "tedlasso",    title: "Ted Lasso",             genre: "Comedy",   rt: "4.7", status: "now",  statusLabel: "Seasons 1–3 · Available now",     platform: "appletv", gradient: ["#1a2a1a", "#3a5a3a", "#6a9a6a"], image: "https://media.themoviedb.org/t/p/w500/5fhZdwP1DVJ0FyVH6vrFdHwpXIn.jpg" },
+  { id: "silo-wl",     title: "Silo",                  genre: "Sci-Fi",   rt: "4.5", status: "now",  statusLabel: "Season 2 · Available now",        platform: "appletv", gradient: ["#1a1010", "#3a2010", "#7a5030"], image: "https://media.themoviedb.org/t/p/w500/fDMTqUcEh6qJwWZP1SHTfoaqsCy.jpg" },
+  { id: "morning5",    title: "The Morning Show",      genre: "Drama",    rt: "4.4", status: "soon", statusLabel: "Season 5 · Coming 2026",          platform: "appletv", gradient: ["#1a1a0a", "#3a3a1a", "#6a6a2a"] },
+  { id: "shrinking3",  title: "Shrinking",             genre: "Comedy",   rt: "4.5", status: "soon", statusLabel: "Season 3 · In production",        platform: "appletv", gradient: ["#0a1a0a", "#2a3a2a", "#4a6a4a"] },
+
+  // ── ITVX ─────────────────────────────────────────────────────────────────
+  { id: "bates-wl",    title: "Mr Bates vs The Post Office", genre: "Drama", rt: "4.7", status: "now", statusLabel: "Limited series · Available now", platform: "itvx", gradient: ["#0a1420", "#1a2b3a", "#3a5a6a"] },
+  { id: "stonehouse",  title: "The Tower",             genre: "Thriller", rt: "4.1", status: "now",  statusLabel: "Season 3 · Available now",        platform: "itvx",    gradient: ["#0a0a1a", "#1a1a2a", "#3a3a4a"] },
+  { id: "trigger-now", title: "Trigger Point",         genre: "Thriller", rt: "4.3", status: "now",  statusLabel: "Seasons 1 & 2 · Available now",   platform: "itvx",    gradient: ["#1a0a0a", "#3a1a1a", "#5a2a2a"] },
+  { id: "thebay",      title: "The Bay",               genre: "Thriller", rt: "4.2", status: "now",  statusLabel: "Seasons 1–4 · Available now",     platform: "itvx",    gradient: ["#0a1a2a", "#1a2a3a", "#2a4a5a"] },
+  { id: "rivals-wl",   title: "Rivals",                genre: "Drama",    rt: "4.4", status: "soon", statusLabel: "New season this autumn",          platform: "itvx",    gradient: ["#2a0a1a", "#5a1a3a", "#a03a5a"] },
+  { id: "trigger3",    title: "Trigger Point",         genre: "Thriller", rt: "4.3", status: "soon", statusLabel: "Season 3 · Coming autumn 2026",   platform: "itvx",    gradient: ["#1a0a0a", "#3a1a1a", "#6a2a2a"] },
 ];
 
 export type Recommendation = { id: string; title: string; gradient: [string, string, string]; image?: string };

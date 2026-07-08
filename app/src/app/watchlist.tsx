@@ -4,18 +4,19 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { PostWatchSheet } from "@/components/post-watch-sheet";
 import { PlatformTile, Poster, RtTopBar, SectionLabel } from "@/components/streamers";
-import { platformById, platforms, watchlist, type PlatformId, type WatchTitle } from "@/data/streamers";
+import { activeDeals, platformById, platforms, watchlist, type PlatformId, type WatchTitle } from "@/data/streamers";
 import { colors, radius, wa } from "@/theme";
 
 const SECTIONS = [
   { key: "now", title: "Available now" },
   { key: "soon", title: "Coming soon" },
-  { key: "elsewhere", title: "Not yet on Netflix" },
 ] as const;
 
 export default function WatchlistScreen() {
-  const [selected, setSelected] = useState<PlatformId>("netflix");
+  const dealPlatforms = platforms.filter((p) => activeDeals.some((d) => d.platform === p.id));
+  const [selected, setSelected] = useState<PlatformId>(dealPlatforms[0]?.id ?? "netflix");
   const [watched, setWatched] = useState<{ title: string; subtitle: string } | null>(null);
+  const [showAllNow, setShowAllNow] = useState(false);
 
   return (
     <SafeAreaView style={styles.safe} edges={["top"]}>
@@ -30,7 +31,7 @@ export default function WatchlistScreen() {
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.rail}
           >
-            {platforms.map((p) => (
+            {dealPlatforms.map((p) => (
               <PlatformTile
                 key={p.id}
                 p={p}
@@ -43,10 +44,17 @@ export default function WatchlistScreen() {
 
         <View style={{ gap: 32 }}>
           {SECTIONS.map((s) => {
-            const items = watchlist.filter((w) => w.status === s.key);
+            const allItems = watchlist.filter((w) => w.status === s.key && w.platform === selected);
+            const isNow = s.key === "now";
+            const items = isNow && !showAllNow ? allItems.slice(0, 3) : allItems;
             return (
               <View key={s.key}>
-                <SectionLabel sub={`${items.length} ${items.length === 1 ? "title" : "titles"}`} viewAll>
+                <SectionLabel
+                  sub={`${items.length}${isNow && !showAllNow && allItems.length > 3 ? ` of ${allItems.length}` : ""} ${allItems.length === 1 ? "title" : "titles"}`}
+                  viewAll={isNow}
+                  viewAllLabel={showAllNow ? "View less" : "View more"}
+                  onViewAll={() => setShowAllNow((v) => !v)}
+                >
                   {s.title}
                 </SectionLabel>
                 <View style={{ gap: 20 }}>
